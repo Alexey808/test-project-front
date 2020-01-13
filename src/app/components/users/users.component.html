@@ -1,0 +1,8 @@
+<div>
+  <button (click)="getUsers()">get users</button>
+  <div>
+    <div *ngFor="let user of users">
+      <p>id:{{user.id}} name:{{user.name}}</p>
+    </div>
+  </div>
+</div>
