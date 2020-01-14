@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserService } from '../../api/user/user.service';
+import { UserApiService } from '../../api/user/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,11 +7,11 @@ import { UserService } from '../../api/user/user.service';
 export class UsersService {
 
   constructor(
-    private userService: UserService
+    private userApiService: UserApiService
   ) { }
 
   getUsers() {
-    const users = this.userService.getUsers();
+    const users = this.userApiService.getUsers();
     console.log('users.service -> getUsers -> ', users);
     return users;
   }

@@ -5,7 +5,7 @@ import { User } from './user.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserApiService {
   private url = '/api/users';
   constructor(
     private http: HttpClient
