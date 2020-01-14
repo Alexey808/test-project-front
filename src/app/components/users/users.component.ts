@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { UsersService } from './users.service';
+import {Observable} from 'rxjs';
+import {User} from '../../api/user/user.interface';
 
 @Component({
   selector: 'app-users',
@@ -7,7 +9,9 @@ import { UsersService } from './users.service';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  users = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
+  users: any = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
+
+  //$users: Observable<any>;
 
   constructor(
     public usersService: UsersService
@@ -15,9 +19,14 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {}
 
-  getUsers() {
-    const users = this.usersService.getUsers() || this.users;
-    console.log('user.component -> users -> ', users);
-    return users;
+  async getUsers() {
+   // let test: any;
+    const $users = await this.usersService.getUsers();
+
+    $users.subscribe((data) => this.users = data);
+
+    //console.log('user.component -> users -> ', test);
+
+    return this.users;
   }
 }
