@@ -1,7 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UsersService } from './users.service';
-import {Observable} from 'rxjs';
-import {User} from '../../api/user/user.interface';
+import { IUser } from '../../api/user/user.interface';
 
 @Component({
   selector: 'app-users',
@@ -9,9 +8,7 @@ import {User} from '../../api/user/user.interface';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  users: any = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
-
-  //$users: Observable<any>;
+  users: IUser[] = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
 
   constructor(
     public usersService: UsersService
@@ -19,14 +16,16 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {}
 
-  async getUsers() {
-   // let test: any;
+  async getUsers(): Promise<IUser[]> {
     const $users = await this.usersService.getUsers();
-
-    $users.subscribe((data) => this.users = data);
-
-    //console.log('user.component -> users -> ', test);
+    $users.subscribe((data: IUser[]) => {
+      return this.users = [...data];
+    });
 
     return this.users;
+  }
+
+  async getUser(userId) {
+    // const $user = await this.usersService.getUser(userId);
   }
 }
