@@ -1,8 +1,20 @@
 <div>
+
+  <div>id: {{selectedUser.id}}</div>
+  <div>name: <input [value]="selectedUser.name" type="text"/></div>
+  <br>
+  <button (click)="saveUser()">save user in bd</button>
+  <button (click)="addUser()">add new user</button>
+  <button (click)="deleteUser()">delete user</button>
+
+  <br><br>
+
   <button (click)="getUsers()">get users</button>
-  <div>
-    <div *ngFor="let user of users">
-      <p>id:{{user.id}} name:{{user.name}}</p>
-    </div>
-  </div>
+  <ul>
+    <li *ngFor="let user of users">
+      id:{{user.id}} name:{{user.name}}
+      <button (click)="editUser(user.id)">edit</button>
+    </li>
+  </ul>
+
 </div>

@@ -4,11 +4,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { UserApiService } from './user/user.service';
 
 
-
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule, HttpClientModule
+    CommonModule,
+    HttpClientModule,
   ],
   providers: [
     UserApiService

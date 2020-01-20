@@ -9,6 +9,7 @@ import { IUser } from '../../api/user/user.interface';
 })
 export class UsersComponent implements OnInit {
   users: IUser[] = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
+  selectedUser: IUser = {id: 0, name: 'test0'};
 
   constructor(
     public usersService: UsersService
@@ -26,6 +27,22 @@ export class UsersComponent implements OnInit {
   }
 
   async getUser(userId) {
-    // const $user = await this.usersService.getUser(userId);
+    const $user = await this.usersService.getUser(userId);
   }
+
+  async editUser(userId) {
+    this.selectedUser = this.users.find(user => user.id === userId);
+  }
+
+  async saveUser() {}
+
+  async addUser() {
+    const name = this.selectedUser.name || '';
+    if (!name) { return; }
+
+    const user: IUser = { name };
+    this.usersService.addUser(user);
+  }
+
+  async deleteUser() {}
 }
