@@ -10,7 +10,7 @@ import {handleError} from '../helper/handle-error';
   providedIn: 'root'
 })
 export class UserApiService {
-  private url = '/api/users';
+  private readonly url = '/api/users';
   constructor(
     private http: HttpClient
   ) {}
@@ -25,18 +25,25 @@ export class UserApiService {
     return this.http.get(this.url, option);
   }
 
-  addUser(user: IUser): Observable<IUser> {
+  addUser(user: Omit<IUser, 'id'>): Observable<IUser> {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    console.log('---> ', this.url, user);
-    return this.http.post<IUser>(this.url, user, httpOptions).pipe(
-      catchError(handleError<IUser>('addUser'))
+
+    return this.http.post<any>(this.url, user, httpOptions).pipe( // todo разобраться с типом any
+      catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
     );
+    // result.subscribe(x => console.log(x));
+    // console.log('---> ', result);
+    // return result;
   }
 
-  deleteUser(option) {
-    return this.http.delete(this.url, option);
+  deleteUser(id: string) {
+    const url = `${this.url}/${id}`;
+    console.log(url);
+    return this.http.delete(url, {}).pipe(
+      catchError(handleError<string>('addUser', id))
+    );
   }
 
   updateUser(options) {

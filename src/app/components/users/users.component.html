@@ -1,20 +1,27 @@
 <div>
 
   <div>id: {{selectedUser.id}}</div>
-  <div>name: <input [value]="selectedUser.name" type="text"/></div>
+  <div>name: <input [(ngModel)]="selectedUser.name" type="text"/></div>
   <br>
   <button (click)="saveUser()">save user in bd</button>
   <button (click)="addUser()">add new user</button>
-  <button (click)="deleteUser()">delete user</button>
+  <button (click)="deleteUser(selectedUser.id)">delete user</button>
 
   <br><br>
 
   <button (click)="getUsers()">get users</button>
-  <ul>
-    <li *ngFor="let user of users">
-      id:{{user.id}} name:{{user.name}}
-      <button (click)="editUser(user.id)">edit</button>
-    </li>
-  </ul>
+
+  <ng-template let-users="userList" #userTemplate>
+    <ul>
+      <li *ngFor="let user of users | async">
+        id:{{user.id}} name:{{user.name}}
+        <button (click)="editUser(user)">edit</button>
+      </li>
+    </ul>
+  </ng-template>
+  <ng-template [ngTemplateOutlet]="userTemplate"
+               [ngTemplateOutletContext]="{userList: users$}"
+  ></ng-template>
+
 
 </div>

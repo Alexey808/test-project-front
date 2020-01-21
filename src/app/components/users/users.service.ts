@@ -7,23 +7,23 @@ import {IUser} from '../../api/user/user.interface';
   providedIn: 'root'
 })
 export class UsersService {
-  //users: IUser[] = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
+  // users: IUser[] = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
 
   constructor(
     private userApiService: UserApiService
   ) { }
 
-  getUsers() {
-    return this.userApiService.getUsers();
-  }
-
-  getUser(id) {
-    return this.userApiService.getUser(id);
-  }
-
-  addUser(user) {
-    return this.userApiService.addUser(user);
-  }
+  // getUsers() {
+  //   return this.userApiService.getUsers();
+  // }
+  //
+  // getUser(id) {
+  //   return this.userApiService.getUser(id);
+  // }
+  //
+  // addUser(user) {
+  //   return this.userApiService.addUser(user);
+  // }
 
   // deleteUser() {}
   // updateUser() {}
