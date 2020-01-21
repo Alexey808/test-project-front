@@ -33,14 +33,11 @@ export class UserApiService {
     return this.http.post<any>(this.url, user, httpOptions).pipe( // todo разобраться с типом any
       catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
     );
-    // result.subscribe(x => console.log(x));
-    // console.log('---> ', result);
-    // return result;
   }
 
   deleteUser(id: string) {
     const url = `${this.url}/${id}`;
-    console.log(url);
+
     return this.http.delete(url, {}).pipe(
       catchError(handleError<string>('addUser', id))
     );

@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+@include mat-core();
+@import 'material-palette.scss';
+
+// Объявляем политру
+$mat-palette-primary: mat-palette($palette-primary);
+$mat-palette-accept: mat-palette($palette-accept);
+$mat-palette-warn: mat-palette($mat-deep-orange);
+
+// Создаём тему
+$theme-base: mat-light-theme($mat-palette-primary, $mat-palette-accept, $mat-palette-warn);
+
+// Подключаем тему
+@include angular-material-theme($theme-base);

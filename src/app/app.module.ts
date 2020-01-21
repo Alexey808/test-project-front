@@ -5,6 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ApiModule } from './api/api.module';
 import { MainModule } from './components/main/main.module';
+import { MaterialModule } from './material.module';
+import { GridModule } from '@angular/flex-layout/grid';
 
 @NgModule({
   declarations: [
@@ -13,8 +15,10 @@ import { MainModule } from './components/main/main.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MaterialModule,
+    GridModule,
     ApiModule,
-    MainModule
+    MainModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

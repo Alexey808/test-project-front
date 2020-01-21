@@ -23,5 +23,30 @@
                [ngTemplateOutletContext]="{userList: users$}"
   ></ng-template>
 
+  <div
+    gdAreas="forms forms | side content | footer footer"
+    gdGap="16px"
+    gdRows="auto auto auto">
+    <div gdArea="forms" gdAreas="data | buttons" gdGap="16px">
+      <div gdArea="data">data</div>
+      <div gdArea="data">buttons</div>
+    </div>
+    <div gdArea="side">
+      Side
+    </div>
+    <div gdArea="content">
+      Content
+    </div>
+    <div gdArea="footer">
+      Footer
+    </div>
+  </div>
+
+
+  <button mat-raised-button>basic</button>
+  <button mat-raised-button color="primary">primary</button>
+  <button mat-raised-button color="accent">accent</button>
+  <button mat-raised-button color="warn">warn</button>
+
 
 </div>
