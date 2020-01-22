@@ -11,6 +11,7 @@ import {map, mergeAll, mergeMap, share, switchMap, toArray} from 'rxjs/operators
 })
 export class UsersComponent implements OnInit {
 
+  // users$: Observable<Observable<IUser>>;
   users$: Observable<IUser[]>;
   selectedUser: IUser = {id: '0', name: ''};
   name = '';
@@ -41,19 +42,16 @@ export class UsersComponent implements OnInit {
     const name = this.selectedUser.name || '';
     if (!name) { return; }
 
-
     const user: Omit<IUser, 'id'> = { name };
-    const addedUser$ = await this.userApiService.addUser(user);
-    const users$ = this.users$.pipe(
-      switchMap(users$$ => users$$)
-    );
+    const addedUser$: Observable<IUser> = await this.userApiService.addUser(user);
 
-    const updatedUserList$ = merge<Observable<IUser>>(  // todo type
-      users$,
-      addedUser$
+    // todo сохраняется проблема типов, сложность с мержем стримов addedUser$ и this.users$
+    const users$: Observable<IUser> = this.users$.pipe(
+      switchMap((users$$) =>  merge(addedUser$, users$$))
     );
-    this.users$ = updatedUserList$;
-    users$.subscribe((u) => console.log('u -> ', u));
+    const test$ = users$.pipe(toArray());
+
+    this.users$ = test$;
   }
 
 
