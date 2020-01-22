@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UsersService } from './users.service';
 import { IUser } from '../../api/user/user.interface';
 import {forkJoin, from, merge, Observable} from 'rxjs';
 import {UserApiService} from '../../api/user/user.service';
-import {map, mergeAll, mergeMap, share, toArray} from 'rxjs/operators';
+import {map, mergeAll, mergeMap, share, switchMap, toArray} from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -11,7 +10,6 @@ import {map, mergeAll, mergeMap, share, toArray} from 'rxjs/operators';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-  // users: IUser[] = [{id: 0, name: 'test0'}, {id: 1, name: 'test1'}, {id: 2, name: 'test2'}];
 
   users$: Observable<IUser[]>;
   selectedUser: IUser = {id: '0', name: ''};
@@ -22,41 +20,17 @@ export class UsersComponent implements OnInit {
 
   ngOnInit() {
     this.getUsers();
-
-
-
-    // const one$ = from([1, 2]);
-    // const two$ = from([3, 4]);
-    // const result = merge(one$, two$);
-    // result.subscribe((item) => {
-    //   debugger
-    //   console.log(item);
-    // });
   }
 
   async getUsers() {
     this.users$ = await this.userApiService.getUsers();
-    // const users = await this.userApiService.getUsers();
-    // const u = forkJoin(users);
-    // u.subscribe((item) => console.log('u item -> ', item));
-    // console.log('u -> ', u);
-    // this.users$.pipe(forkJoin);
 
-    // this.users$.subscribe((items) => console.log('--->>>', from(items)));
-
+    // // example
     // this.users$.subscribe(
     //   (items) => from(items).subscribe(
     //     (item) => console.log('i -> ', item)
     //   )
     // );
-
-    const test = this.users$.pipe(
-      map(users => forkJoin(users))
-    );
-
-
-    this.users$.subscribe((y) => console.log('y -> ', y));
-
   }
 
   editUser(user: IUser) {
@@ -68,20 +42,18 @@ export class UsersComponent implements OnInit {
     if (!name) { return; }
 
 
-
     const user: Omit<IUser, 'id'> = { name };
     const addedUser$ = await this.userApiService.addUser(user);
-    const updatedUserList$ = merge(this.users$, addedUser$.pipe(toArray()));
-    //this.users$ = updatedUserList$;
+    const users$ = this.users$.pipe(
+      switchMap(users$$ => users$$)
+    );
 
-
-    updatedUserList$.subscribe((item) => {
-      debugger;
-      console.log('sb1 -->>', item);
-    });
-    this.users$.subscribe((item) => console.log('sb2 -->>', item));
-    // console.log('component', addedUser$);
-    this.getUsers();
+    const updatedUserList$ = merge<Observable<IUser>>(  // todo type
+      users$,
+      addedUser$
+    );
+    this.users$ = updatedUserList$;
+    users$.subscribe((u) => console.log('u -> ', u));
   }
 
 
