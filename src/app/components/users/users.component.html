@@ -1,52 +1,64 @@
-<div>
+<div fxLayout="column">
 
-  <div>id: {{selectedUser.id}}</div>
-  <div>name: <input [(ngModel)]="selectedUser.name" type="text"/></div>
-  <br>
-  <button (click)="saveUser()">save user in bd</button>
-  <button (click)="addUser()">add new user</button>
-  <button (click)="deleteUser(selectedUser.id)">delete user</button>
 
-  <br><br>
-
-  <button (click)="getUsers()">get users</button>
-
-  <ng-template let-users="userList" #userTemplate>
-    <ul>
-      <li *ngFor="let user of users | async">
-        id:{{user.id}} name:{{user.name}}
-        <button (click)="editUser(user)">edit</button>
-      </li>
-    </ul>
-  </ng-template>
-  <ng-template [ngTemplateOutlet]="userTemplate"
-               [ngTemplateOutletContext]="{userList: users$}"
-  ></ng-template>
-
-  <div
-    gdAreas="forms forms | side content | footer footer"
-    gdGap="16px"
-    gdRows="auto auto auto">
-    <div gdArea="forms" gdAreas="data | buttons" gdGap="16px">
-      <div gdArea="data">data</div>
-      <div gdArea="data">buttons</div>
-    </div>
-    <div gdArea="side">
-      Side
-    </div>
-    <div gdArea="content">
-      Content
-    </div>
-    <div gdArea="footer">
-      Footer
+  <div fxLayout>
+    <div fxFlex="50%">
+      <mat-card class="card">
+        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div>name: <input [(ngModel)]="selectedUser.name" type="text"/></div>
+          <div>id: {{selectedUser.id}}</div>
+        </div>
+        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
+          <button mat-raised-button color="primary" (click)="saveUser()">Сохранить (put)</button>
+          <button mat-raised-button color="primary" (click)="addUser()">Добавить (post)</button>
+          <button mat-raised-button color="primary" (click)="deleteUser(selectedUser.id)">Удалить (post delete)</button>
+        </div>
+        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
+          <button mat-raised-button color="primary" (click)="getUsers()">Загрузить (get)</button>
+          <button mat-raised-button color="primary" (click)="getUsers()">Загрузить по id (get)</button>
+        </div>
+      </mat-card>
     </div>
   </div>
 
 
-  <button mat-raised-button>basic</button>
-  <button mat-raised-button color="primary">primary</button>
-  <button mat-raised-button color="accent">accent</button>
-  <button mat-raised-button color="warn">warn</button>
+  <mat-card class="card">
+    <ng-template [ngTemplateOutlet]="userTemplate"
+                 [ngTemplateOutletContext]="{userList: users$}"
+    ></ng-template>
+  </mat-card>
+
+  <ng-template let-users="userList" #userTemplate>
+    <mat-grid-list cols="30" rowHeight="40px">
+
+      <mat-grid-tile colspan="2">
+        <div fxFlex fxLayoutAlign="start center">Option</div>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="14">
+        <div fxFlex fxLayoutAlign="start center">Id</div>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="14">
+        <div fxFlex fxLayoutAlign="start center">Name</div>
+      </mat-grid-tile>
+
+      <ng-container *ngFor="let user of users | async">
+        <mat-grid-tile colspan="2">
+          <div fxFlex fxLayoutAlign="start center">
+            <button mat-icon-button color="primary" aria-label="user-edit" (click)="editUser(user)">
+              <mat-icon>mode_edit</mat-icon>
+            </button>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="14">
+          <div fxFlex fxLayoutAlign="start center">{{user.id}}</div>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="14">
+          <div fxFlex fxLayoutAlign="start center">{{user.name}}</div>
+        </mat-grid-tile>
+      </ng-container>
+
+    </mat-grid-list>
+  </ng-template>
 
 
 </div>

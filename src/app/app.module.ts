@@ -7,6 +7,7 @@ import { ApiModule } from './api/api.module';
 import { MainModule } from './components/main/main.module';
 import { MaterialModule } from './material.module';
 import { GridModule } from '@angular/flex-layout/grid';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -17,8 +18,9 @@ import { GridModule } from '@angular/flex-layout/grid';
     AppRoutingModule,
     MaterialModule,
     GridModule,
+    FlexLayoutModule,
     ApiModule,
-    MainModule,
+    MainModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -5,7 +5,8 @@ import { UsersComponent } from '../users/users.component';
 import { FormsModule } from '@angular/forms';
 
 import { GridModule } from '@angular/flex-layout/grid';
-import {MaterialModule} from '../../material.module';
+import { MaterialModule } from '../../material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import {MaterialModule} from '../../material.module';
     FormsModule,
     MaterialModule,
     GridModule,
+    FlexLayoutModule,
   ],
   exports: [
     MainComponent
