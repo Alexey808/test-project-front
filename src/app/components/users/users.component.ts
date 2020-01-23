@@ -12,22 +12,25 @@ import { switchMap, toArray } from 'rxjs/operators';
 export class UsersComponent implements OnInit {
   users$: Observable<IUser[]>;
   selectedUser: IUser = {id: '', name: ''};
-  name = '';
 
   constructor(
     private userApiService: UserApiService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getUsers();
   }
 
-  async getUsers() {
-    this.users$ = await this.userApiService.getUsers();
+  editUser(user: IUser): void {
+    this.selectedUser = user;
   }
 
-  editUser(user: IUser) {
-    this.selectedUser = user;
+  getUsers(): void {
+    this.users$ = this.userApiService.getUsers();
+  }
+
+  getUser(userId: string): void {
+    this.userApiService.getUser(userId).subscribe();
   }
 
   addUser(): void {
@@ -44,7 +47,6 @@ export class UsersComponent implements OnInit {
     );
   }
 
-
   deleteUser(id: string): void {
     if (!id) { return; }
 
@@ -54,6 +56,8 @@ export class UsersComponent implements OnInit {
       switchMap((users: IUser[]) => users),
       toArray()
     );
+
+    this.selectedUser = { id: '', name: '' };
   }
 
   saveUser(): void {
@@ -67,8 +71,4 @@ export class UsersComponent implements OnInit {
       toArray()
     );
   }
-
-  // async getUser(userId) {
-  //   const $user = await this.usersService.getUser(userId);
-  // }
 }

@@ -25,12 +25,16 @@ export class UserApiService {
     );
   }
 
-  async getUser(option): Promise<Observable<any>> {
-    return this.http.get(this.url, option);
+  getUser(id: string): Observable<any> {
+    const url = `${this.url}/${id}`;
+    console.log('-----------> ', url, 'id ->>>> ', id);
+    return this.http.get<IUser>(url, this.httpOptions).pipe(
+      catchError(handleError('getUser', id))
+    );
   }
 
-  addUser(user: Omit<IUser, 'id'>): Observable<any> { // todo type
-    return this.http.post(this.url, user, this.httpOptions).pipe(
+  addUser(user: Omit<IUser, 'id'>): Observable<Omit<IUser, 'id'>> { // todo привести типы в нормальный вид
+    return this.http.post<Omit<IUser, 'id'>>(this.url, user, this.httpOptions).pipe(
       catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
     );
   }
