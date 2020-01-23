@@ -10,11 +10,10 @@ import {map, mergeAll, mergeMap, share, switchMap, toArray} from 'rxjs/operators
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit {
-
-  // users$: Observable<Observable<IUser>>;
   users$: Observable<IUser[]>;
   selectedUser: IUser = {id: '0', name: ''};
   name = '';
+
   constructor(
     private userApiService: UserApiService
   ) { }
@@ -25,13 +24,6 @@ export class UsersComponent implements OnInit {
 
   async getUsers() {
     this.users$ = await this.userApiService.getUsers();
-
-    // // example
-    // this.users$.subscribe(
-    //   (items) => from(items).subscribe(
-    //     (item) => console.log('i -> ', item)
-    //   )
-    // );
   }
 
   editUser(user: IUser) {
@@ -45,13 +37,13 @@ export class UsersComponent implements OnInit {
     const user: Omit<IUser, 'id'> = { name };
     const addedUser$: Observable<IUser> = await this.userApiService.addUser(user);
 
-    // todo сохраняется проблема типов, сложность с мержем стримов addedUser$ и this.users$
-    const users$: Observable<IUser> = this.users$.pipe(
-      switchMap((users$$) =>  merge(addedUser$, users$$))
-    );
-    const test$ = users$.pipe(toArray());
+    addedUser$.subscribe();
 
-    this.users$ = test$;
+    const users$: Observable<IUser[]> = this.users$;
+    this.users$ = users$.pipe(
+      switchMap((users) => users),
+      toArray()
+    );
   }
 
 
@@ -59,6 +51,7 @@ export class UsersComponent implements OnInit {
     await this.userApiService.deleteUser(id);
     this.getUsers();
   }
+
   async saveUser() {}
   // async getUser(userId) {
   //   const $user = await this.usersService.getUser(userId);
