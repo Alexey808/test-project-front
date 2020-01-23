@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
-import {forkJoin, from, merge, Observable} from 'rxjs';
-import {UserApiService} from '../../api/user/user.service';
-import {map, mergeAll, mergeMap, share, switchMap, toArray} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { UserApiService } from '../../api/user/user.service';
+import { switchMap, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users',
@@ -11,7 +11,7 @@ import {map, mergeAll, mergeMap, share, switchMap, toArray} from 'rxjs/operators
 })
 export class UsersComponent implements OnInit {
   users$: Observable<IUser[]>;
-  selectedUser: IUser = {id: '0', name: ''};
+  selectedUser: IUser = {id: '', name: ''};
   name = '';
 
   constructor(
@@ -30,26 +30,30 @@ export class UsersComponent implements OnInit {
     this.selectedUser = user;
   }
 
-  async addUser() {
+  addUser(): void {
     const name = this.selectedUser.name || '';
     if (!name) { return; }
 
     const user: Omit<IUser, 'id'> = { name };
-    const addedUser$: Observable<IUser> = await this.userApiService.addUser(user);
 
-    addedUser$.subscribe();
-
+    this.userApiService.addUser(user).subscribe();
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
-      switchMap((users) => users),
+      switchMap((users: IUser[]) => users),
       toArray()
     );
   }
 
 
-  async deleteUser(id: string) {
-    await this.userApiService.deleteUser(id);
-    this.getUsers();
+  deleteUser(id: string): void {
+    if (!id) { return; }
+
+    this.userApiService.deleteUser(id).subscribe();
+    const users$: Observable<IUser[]> = this.users$;
+    this.users$ = users$.pipe(
+      switchMap((users: IUser[]) => users),
+      toArray()
+    );
   }
 
   async saveUser() {}

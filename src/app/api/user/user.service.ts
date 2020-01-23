@@ -35,10 +35,13 @@ export class UserApiService {
     );
   }
 
-  deleteUser(id: string) {
-    const url = `${this.url}/${id}`;
+  deleteUser(id: string): Observable<any> {
+    const url = `${this.url}?id=${id}`;
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
 
-    return this.http.delete(url, {}).pipe(
+    return this.http.delete(url, httpOptions).pipe(
       catchError(handleError<string>('addUser', id))
     );
   }
