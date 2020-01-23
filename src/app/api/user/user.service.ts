@@ -11,6 +11,10 @@ import {handleError} from '../helper/handle-error';
 })
 export class UserApiService {
   private readonly url = '/api/users';
+  private readonly httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
   constructor(
     private http: HttpClient
   ) {}
@@ -25,34 +29,24 @@ export class UserApiService {
     return this.http.get(this.url, option);
   }
 
-  addUser(user: Omit<IUser, 'id'>): Observable<IUser> {
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
-
-    return this.http.post<any>(this.url, user, httpOptions).pipe( // todo type
+  addUser(user: Omit<IUser, 'id'>): Observable<any> { // todo type
+    return this.http.post(this.url, user, this.httpOptions).pipe(
       catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
     );
   }
 
   deleteUser(id: string): Observable<any> { // todo type
     const url = `${this.url}?id=${id}`;
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
 
-    return this.http.delete(url, httpOptions).pipe(
+    return this.http.delete(url, this.httpOptions).pipe(
       catchError(handleError<string>('addUser', id))
     );
   }
 
-  updateUser(user: IUser): Observable<any> { // todo type
+  updateUser(user: IUser): Observable<IUser> {
     const url = `${this.url}/${user.id}`;
-    const httpOptions = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
 
-    return this.http.put(url, user, httpOptions).pipe(
+    return this.http.put<IUser>(url, user, this.httpOptions).pipe(
       catchError(handleError<IUser>('updateUser', user))
     );
   }
