@@ -47,6 +47,18 @@ export class UsersComponent implements OnInit {
     );
   }
 
+  saveUser(): void {
+    const { id, name } = this.selectedUser;
+    if (!id || !name) { return; }
+
+    this.userApiService.updateUser({id , name}).subscribe();
+    const users$: Observable<IUser[]> = this.users$;
+    this.users$ = users$.pipe(
+      switchMap((users: IUser[]) => users),
+      toArray()
+    );
+  }
+
   deleteUser(id: string): void {
     if (!id) { return; }
 
@@ -60,15 +72,14 @@ export class UsersComponent implements OnInit {
     this.selectedUser = { id: '', name: '' };
   }
 
-  saveUser(): void {
-    const { id, name } = this.selectedUser;
-    if (!id || !name) { return; }
-
-    this.userApiService.updateUser({id , name}).subscribe();
+  deleteAllUsers(): void {
+    this.userApiService.deleteAllUsers().subscribe();
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
       switchMap((users: IUser[]) => users),
       toArray()
     );
+
+    this.selectedUser = { id: '', name: '' };
   }
 }

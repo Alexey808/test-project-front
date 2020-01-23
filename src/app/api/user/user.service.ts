@@ -39,6 +39,14 @@ export class UserApiService {
     );
   }
 
+  updateUser(user: IUser): Observable<IUser> {
+    const url = `${this.url}/${user.id}`;
+
+    return this.http.put<IUser>(url, user, this.httpOptions).pipe(
+      catchError(handleError<IUser>('updateUser', user))
+    );
+  }
+
   deleteUser(id: string): Observable<any> { // todo type
     const url = `${this.url}?id=${id}`;
 
@@ -47,11 +55,9 @@ export class UserApiService {
     );
   }
 
-  updateUser(user: IUser): Observable<IUser> {
-    const url = `${this.url}/${user.id}`;
-
-    return this.http.put<IUser>(url, user, this.httpOptions).pipe(
-      catchError(handleError<IUser>('updateUser', user))
+  deleteAllUsers(): Observable<any> { // todo type
+    return this.http.delete(this.url, this.httpOptions).pipe(
+      catchError(handleError<string>('deleteAllUsers'))
     );
   }
 }
