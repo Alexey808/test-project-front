@@ -56,7 +56,18 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  async saveUser() {}
+  saveUser(): void {
+    const { id, name } = this.selectedUser;
+    if (!id || !name) { return; }
+
+    this.userApiService.updateUser({id , name}).subscribe();
+    const users$: Observable<IUser[]> = this.users$;
+    this.users$ = users$.pipe(
+      switchMap((users: IUser[]) => users),
+      toArray()
+    );
+  }
+
   // async getUser(userId) {
   //   const $user = await this.usersService.getUser(userId);
   // }

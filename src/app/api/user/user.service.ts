@@ -30,12 +30,12 @@ export class UserApiService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
-    return this.http.post<any>(this.url, user, httpOptions).pipe( // todo разобраться с типом any
+    return this.http.post<any>(this.url, user, httpOptions).pipe( // todo type
       catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
     );
   }
 
-  deleteUser(id: string): Observable<any> {
+  deleteUser(id: string): Observable<any> { // todo type
     const url = `${this.url}?id=${id}`;
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -46,7 +46,14 @@ export class UserApiService {
     );
   }
 
-  updateUser(options) {
-    return this.http.put(this.url, options);
+  updateUser(user: IUser): Observable<any> { // todo type
+    const url = `${this.url}/${user.id}`;
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+
+    return this.http.put(url, user, httpOptions).pipe(
+      catchError(handleError<IUser>('updateUser', user))
+    );
   }
 }
