@@ -27,7 +27,6 @@ export class UserApiService {
 
   getUser(id: string): Observable<any> {
     const url = `${this.url}/${id}`;
-    console.log('-----------> ', url, 'id ->>>> ', id);
     return this.http.get<IUser>(url, this.httpOptions).pipe(
       catchError(handleError('getUser', id))
     );
