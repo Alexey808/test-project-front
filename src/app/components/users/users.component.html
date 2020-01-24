@@ -4,10 +4,22 @@
   <div fxLayout>
     <div fxFlex="50%">
       <mat-card class="card">
-        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="16px">
-          <div>name: <input [(ngModel)]="selectedUser.name" type="text"/></div>
-          <div>id: {{selectedUser.id}}</div>
-        </div>
+
+
+        <form [formGroup]="userForm">
+          <div formGroupName="baseInfo" class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="16px">
+            <mat-form-field appearance="outline">
+              <mat-label>Name</mat-label>
+              <input matInput type="text" formControlName="userName" placeholder="Name">
+              <mat-icon matSuffix color="primary">sentiment_very_satisfied</mat-icon>
+              <mat-hint>A-z, А-я, 0-9</mat-hint>
+            </mat-form-field>
+
+            <div>id: {{selectedUser.id}}</div>
+          </div>
+        </form>
+
+
         <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
           <button mat-raised-button color="primary" (click)="saveUser()">Сохранить (put)</button>
           <button mat-raised-button color="primary" (click)="addUser()">Добавить (post)</button>

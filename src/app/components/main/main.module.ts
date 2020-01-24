@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { GridModule } from '@angular/flex-layout/grid';
 import { MaterialModule } from '../../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -15,10 +17,12 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   ],
   imports: [
     CommonModule,
+    BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
     MaterialModule,
     GridModule,
-    FlexLayoutModule,
+    FlexLayoutModule
   ],
   exports: [
     MainComponent
