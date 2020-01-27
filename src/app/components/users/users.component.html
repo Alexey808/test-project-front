@@ -15,7 +15,12 @@
               <mat-hint>A-z, А-я, 0-9</mat-hint>
             </mat-form-field>
 
-            <div>id: {{selectedUser.id}}</div>
+            <mat-form-field appearance="outline">
+              <mat-label>Id</mat-label>
+              <input matInput type="text" formControlName="userId" placeholder="Id" disabled>
+              <mat-icon matSuffix color="primary">sentiment_very_satisfied</mat-icon>
+              <mat-hint>disabled</mat-hint>
+            </mat-form-field>
           </div>
         </form>
 
@@ -23,11 +28,11 @@
         <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
           <button mat-raised-button color="primary" (click)="saveUser()">Сохранить (put)</button>
           <button mat-raised-button color="primary" (click)="addUser()">Добавить (post)</button>
-          <button mat-raised-button color="primary" (click)="deleteUser(selectedUser.id)">Удалить (post delete)</button>
+          <button mat-raised-button color="primary" (click)="deleteUser(getUserParams('id'))">Удалить (post delete)</button>
         </div>
         <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
           <button mat-raised-button color="primary" (click)="getUsers()">Загрузить (get)</button>
-          <button mat-raised-button color="primary" (click)="getUser(selectedUser.id)">Загрузить по id (get)</button>
+          <button mat-raised-button color="primary" (click)="getUser(getUserParams('id'))">Загрузить по id (get)</button>
           <button mat-raised-button color="primary" (click)="deleteAllUsers()">Удалить всех</button>
         </div>
       </mat-card>

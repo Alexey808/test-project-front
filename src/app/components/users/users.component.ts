@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
-import { Observable } from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { switchMap, toArray } from 'rxjs/operators';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
   users$: Observable<IUser[]>;
-  selectedUser: IUser = {id: '', name: ''};
   userForm: FormGroup;
+  subscription: Subscription = new Subscription();
 
   constructor(
     private userApiService: UserApiService
@@ -21,25 +21,25 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUsers();
+
     this.userForm = new FormGroup({
       baseInfo: new FormGroup({
         userName: new FormControl('', [
           Validators.minLength(2),
           Validators.maxLength(20),
           Validators.required
-        ])
+        ]),
+        userId: new FormControl('', [])
       })
     });
 
-    // this.userForm.get('userName').valueChanges.subscribe(value => {
-    //   console.log(value);
-    // });
-
-    this.userForm.get('baseInfo').setValue({ userName: 'test'});
+    this.subscription.add(
+      this.userForm.get('baseInfo').valueChanges.subscribe()
+    );
   }
 
   editUser(user: IUser): void {
-    this.selectedUser = user;
+    this.userForm.get('baseInfo').setValue({userName: user.name, userId: user.id});
   }
 
   getUsers(): void {
@@ -47,16 +47,21 @@ export class UsersComponent implements OnInit {
   }
 
   getUser(userId: string): void {
-    this.userApiService.getUser(userId).subscribe();
+    this.subscription.add(
+      this.userApiService.getUser(userId).subscribe()
+    );
   }
 
   addUser(): void {
-    const name = this.selectedUser.name || '';
+    const name = this.getUserParams('name');
     if (!name) { return; }
 
     const user: Omit<IUser, 'id'> = { name };
 
-    this.userApiService.addUser(user).subscribe();
+    this.subscription.add(
+      this.userApiService.addUser(user).subscribe()
+    );
+
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
       switchMap((users: IUser[]) => users),
@@ -65,10 +70,13 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser(): void {
-    const { id, name } = this.selectedUser;
+    const { userId: id , userName: name } = this.userForm.get('baseInfo').value;
     if (!id || !name) { return; }
 
-    this.userApiService.updateUser({id , name}).subscribe();
+    this.subscription.add(
+      this.userApiService.updateUser({id , name}).subscribe()
+    );
+
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
       switchMap((users: IUser[]) => users),
@@ -77,12 +85,12 @@ export class UsersComponent implements OnInit {
   }
 
   deleteUser(id: string): void {
-    // console.log(this.userForm);
-    // this.userForm.setControl({value: this.use})
-
     if (!id) { return; }
 
-    this.userApiService.deleteUser(id).subscribe();
+    this.subscription.add(
+      this.userApiService.deleteUser(id).subscribe()
+    );
+
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
       switchMap((users: IUser[]) => users),
@@ -91,19 +99,25 @@ export class UsersComponent implements OnInit {
 
     // this.selectedUser = { id: '', name: '' };
 
-    this.userForm.get('baseInfo').reset();
+    this.resetUserForm();
   }
 
   deleteAllUsers(): void {
-    this.userApiService.deleteAllUsers().subscribe();
+    this.subscription.add(
+      this.userApiService.deleteAllUsers().subscribe()
+    );
+
     const users$: Observable<IUser[]> = this.users$;
     this.users$ = users$.pipe(
       switchMap((users: IUser[]) => users),
       toArray()
     );
 
-    this.selectedUser = { id: '', name: '' };
+    this.resetUserForm();
+  }
 
+  resetUserForm(): void {
+    this.userForm.get('baseInfo').reset();
   }
 
   // private customValidatorName() {
@@ -115,4 +129,21 @@ export class UsersComponent implements OnInit {
   //     }
   //   }
   // }
+
+  getUserParams(property) {
+    switch (property) {
+      case 'id':
+        return this.userForm.get('baseInfo').value.userId || '';
+      case 'name':
+        return this.userForm.get('baseInfo').value.userName || '';
+      default:
+        return '';
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }
