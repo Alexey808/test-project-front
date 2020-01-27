@@ -9,11 +9,13 @@ import { MaterialModule } from '../../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {UserFormComponent} from '../user-form/user-form.component';
 
 @NgModule({
   declarations: [
     MainComponent,
-    UsersComponent
+    UsersComponent,
+    UserFormComponent
   ],
   imports: [
     CommonModule,

@@ -2,40 +2,16 @@
 
 
   <div fxLayout>
-    <div fxFlex="50%">
-      <mat-card class="card">
-
-
-        <form [formGroup]="userForm">
-          <div formGroupName="baseInfo" class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="16px">
-            <mat-form-field appearance="outline">
-              <mat-label>Name</mat-label>
-              <input matInput type="text" formControlName="userName" placeholder="Name">
-              <mat-icon matSuffix color="primary">sentiment_very_satisfied</mat-icon>
-              <mat-hint>A-z, А-я, 0-9</mat-hint>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>Id</mat-label>
-              <input matInput type="text" formControlName="userId" placeholder="Id" disabled>
-              <mat-icon matSuffix color="primary">sentiment_very_satisfied</mat-icon>
-              <mat-hint>disabled</mat-hint>
-            </mat-form-field>
-          </div>
-        </form>
-
-
-        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
-          <button mat-raised-button color="primary" (click)="saveUser()">Сохранить (put)</button>
-          <button mat-raised-button color="primary" (click)="addUser()">Добавить (post)</button>
-          <button mat-raised-button color="primary" (click)="deleteUser(getUserParams('id'))">Удалить (post delete)</button>
-        </div>
-        <div class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="8px">
-          <button mat-raised-button color="primary" (click)="getUsers()">Загрузить (get)</button>
-          <button mat-raised-button color="primary" (click)="getUser(getUserParams('id'))">Загрузить по id (get)</button>
-          <button mat-raised-button color="primary" (click)="deleteAllUsers()">Удалить всех</button>
-        </div>
-      </mat-card>
+    <div fxFlex="50%" class="layout-block">
+      <app-user-form
+        [users$]="users$"
+        [selectedUser]="selectedUser"
+        (eventAddUser)="addUser($event)"
+        (eventEditUser)="saveUser($event)"
+        (eventDeleteUser)="deleteUser($event)"
+        (eventDeleteUsers)="deleteAllUsers()"
+        (eventGetUser)="getUser($event)"
+      ></app-user-form>
     </div>
   </div>
 

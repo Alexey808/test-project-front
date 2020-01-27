@@ -3,7 +3,6 @@ import { IUser } from '../../api/user/user.interface';
 import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { switchMap, toArray } from 'rxjs/operators';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-users',
@@ -12,7 +11,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class UsersComponent implements OnInit, OnDestroy {
   users$: Observable<IUser[]>;
-  userForm: FormGroup;
+  selectedUser: IUser;
   subscription: Subscription = new Subscription();
 
   constructor(
@@ -21,43 +20,23 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getUsers();
-
-    this.userForm = new FormGroup({
-      baseInfo: new FormGroup({
-        userName: new FormControl('', [
-          Validators.minLength(2),
-          Validators.maxLength(20),
-          Validators.required
-        ]),
-        userId: new FormControl('', [])
-      })
-    });
-
-
-    // todo попробовать вынести форму в отедльный компонент и от туда output(тить), что должно помочь избавится от нижнией подписки
-    this.subscription.add(
-      this.userForm.get('baseInfo').valueChanges.subscribe()
-    );
   }
 
   editUser(user: IUser): void {
-    this.userForm.get('baseInfo').setValue({userName: user.name, userId: user.id});
+    this.selectedUser = user;
   }
 
   getUsers(): void {
     this.users$ = this.userApiService.getUsers();
   }
 
-  getUser(userId: string): void {
+  getUser({id}: IUser): void {
     this.subscription.add(
-      this.userApiService.getUser(userId).subscribe()
+      this.userApiService.getUser(id).subscribe()
     );
   }
 
-  addUser(): void {
-    const name = this.getUserParams('name');
-    if (!name) { return; }
-
+  addUser({name}: IUser): void {
     const user: Omit<IUser, 'id'> = { name };
 
     this.subscription.add(
@@ -71,10 +50,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
   }
 
-  saveUser(): void {
-    const { userId: id , userName: name } = this.userForm.get('baseInfo').value;
-    if (!id || !name) { return; }
-
+  saveUser({id, name}: IUser): void {
     this.subscription.add(
       this.userApiService.updateUser({id , name}).subscribe()
     );
@@ -86,9 +62,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
   }
 
-  deleteUser(id: string): void {
-    if (!id) { return; }
-
+  deleteUser({id}: IUser): void {
     this.subscription.add(
       this.userApiService.deleteUser(id).subscribe()
     );
@@ -98,10 +72,6 @@ export class UsersComponent implements OnInit, OnDestroy {
       switchMap((users: IUser[]) => users),
       toArray()
     );
-
-    // this.selectedUser = { id: '', name: '' };
-
-    this.resetUserForm();
   }
 
   deleteAllUsers(): void {
@@ -114,33 +84,6 @@ export class UsersComponent implements OnInit, OnDestroy {
       switchMap((users: IUser[]) => users),
       toArray()
     );
-
-    this.resetUserForm();
-  }
-
-  resetUserForm(): void {
-    this.userForm.get('baseInfo').reset();
-  }
-
-  // private customValidatorName() {
-  //   return (control: AbstractControl): {[key: string]: any} => {
-  //     if (!control.touched) {
-  //       return null;
-  //     } else {
-  //       return this.userForm.baseInfo
-  //     }
-  //   }
-  // }
-
-  getUserParams(property) {
-    switch (property) {
-      case 'id':
-        return this.userForm.get('baseInfo').value.userId || '';
-      case 'name':
-        return this.userForm.get('baseInfo').value.userName || '';
-      default:
-        return '';
-    }
   }
 
   ngOnDestroy(): void {
