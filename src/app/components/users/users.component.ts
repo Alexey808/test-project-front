@@ -31,7 +31,8 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   editUser(user: IUser): void {
-    this.selectedUser = user;
+    this.store.dispatch(new userActions.SelectedUser(user));
+    console.log('store ', this.store.source._value);
   }
 
   // getUsers(): void {
@@ -50,7 +51,7 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     const user = { id: '1-new', name: 'example-1-new' };
     this.store.dispatch(new userActions.AddUsers(user));
-    console.log('store ', this.store);
+    console.log('store ', this.store.source._value);
 
 
     this.subscription.add(
