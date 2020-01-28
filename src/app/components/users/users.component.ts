@@ -24,7 +24,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     private userApiService: UserApiService
   ) {
     this.users$ = store.select(fromRoot.getAllUsers);
-    console.log(this.store);
   }
 
   ngOnInit(): void {
@@ -49,13 +48,14 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     // const user: Omit<IUser, 'id'> = { name };
 
-    const user = { id: 1, name };
-    // this.store.dispatch(new userAction);
-    console.log('this.store -> ', this.store);
+    const user = { id: '1-new', name: 'example-1-new' };
+    this.store.dispatch(new userActions.AddUsers(user));
+    console.log('store ', this.store);
 
-    // this.subscription.add(
-    //   this.userApiService.addUser(user).subscribe()
-    // );
+
+    this.subscription.add(
+      this.userApiService.addUser(user).subscribe()
+    );
     //
     // const users$: Observable<IUser[]> = this.users$;
     // this.users$ = users$.pipe(
