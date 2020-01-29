@@ -6,7 +6,7 @@ export interface IState {
 }
 
 export const initialState: IState = {
-  users: [{id: '0', name: 'test-0'}, {id: '1', name: 'test-1'}, {id: '2', name: 'test-2'}],
+  users: [],
   selectedUser: null
 };
 
