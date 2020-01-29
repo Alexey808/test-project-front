@@ -3,9 +3,9 @@ import { IUser } from '../../api/user/user.interface';
 import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { switchMap, toArray } from 'rxjs/operators';
-import {Store, select} from '@ngrx/store';
-import * as fromRoot from '../../store/reducers';
-import * as userActions from '../../store/actions/users.actions';
+import { Store } from '@ngrx/store';
+import { sGetAllUsers } from '../../store/selectors/users.selectors';
+import { ActionAddUsers, ActionSelectedUser } from '../../store/actions/users.actions';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     private store: Store<{ users: IUser[] }>,
     private userApiService: UserApiService
   ) {
-    this.users$ = store.select(fromRoot.getAllUsers);
+    this.users$ = store.select(sGetAllUsers);
   }
 
   ngOnInit(): void {
@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   editUser(user: IUser): void {
-    this.store.dispatch(new userActions.SelectedUser(user));
+    this.store.dispatch(new ActionSelectedUser(user));
 
     // @ts-ignore
     console.log('store ', this.store.source);
@@ -51,7 +51,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     // const user: Omit<IUser, 'id'> = { name };
 
     const user = { id: '1-new', name: 'example-1-new' };
-    this.store.dispatch(new userActions.AddUsers(user));
+    this.store.dispatch(new ActionAddUsers(user));
     // @ts-ignore
     console.log('store ', this.store.source);
 

@@ -8,12 +8,17 @@ import { MainModule } from './components/main/main.module';
 import { MaterialModule } from './material.module';
 import { GridModule } from '@angular/flex-layout/grid';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from './store/reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
+    StoreModule.forRoot(reducers),
+    StoreDevtoolsModule.instrument(),
     BrowserModule,
     AppRoutingModule,
     MaterialModule,

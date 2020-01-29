@@ -1,11 +1,13 @@
 import * as userAction from '../actions/users.actions';
-import {EnumUserActions} from '../actions/users.actions';
-import {initialState, IState} from './index';
+import { initialState, IState } from './index';
 
-export function reducers(state: IState = initialState, action: userAction.Action) {
+export const getUsers = (state: IState) => state.users;
+export const getSelectedUsers = (state: IState) => state.selectedUser;
+
+export function userReducers(state: IState = initialState, action: userAction.Action) {
   switch (action.type) {
 
-    case EnumUserActions.ADD_USER: {
+    case userAction.TypeUserActions.ADD_USER: {
       const newUser = action.payload;
       return {
         ...state,
@@ -13,7 +15,7 @@ export function reducers(state: IState = initialState, action: userAction.Action
       };
     }
 
-    case EnumUserActions.SELECT_USER: {
+    case userAction.TypeUserActions.SELECT_USER: {
       const selectedUser = action.payload;
       return {
         ...state,
@@ -25,9 +27,3 @@ export function reducers(state: IState = initialState, action: userAction.Action
       return state;
   }
 }
-
-export const getUsers = (state: IState) => state.users;
-export const getSelectedUsers = (state: IState) => state.selectedUser;
-
-
-
