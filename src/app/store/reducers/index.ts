@@ -1,6 +1,6 @@
 import * as userReducer from '../reducers/users.reducers';
 import { IUser } from '../../api/user/user.interface';
-import {ActionReducerMap, createFeatureSelector, createSelector} from '@ngrx/store';
+import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
 
 /* STATE */
 
@@ -14,21 +14,23 @@ export const initialState: IState = {
   selectedUser: null
 };
 
-export const reducers = { // todo type : ActionReducerMap<IState>
-  users: userReducer.reducers
+
+// для модуля, обёртка стора для user
+export const reducers: ActionReducerMap<any> = { // todo type
+  userEntity: userReducer.reducers
 };
 
 
 /* SELECTORS */
 
-export const getUserState = createFeatureSelector<IState>('users');
+export const getUserState = createFeatureSelector<IState>('userEntity');
+export const getSelectedUserState = createFeatureSelector<IState>('selectedUser');
+
 export const getAllUsers = createSelector(
   getUserState,
   userReducer.getUsers
 );
 
-
-export const getSelectedUserState = createFeatureSelector<IState>('selectedUser');
 export const getSelectedUser = createSelector(
   getSelectedUserState,
   userReducer.getSelectedUsers

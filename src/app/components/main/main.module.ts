@@ -4,7 +4,7 @@ import { MainComponent } from './main.component';
 import { UsersComponent } from '../users/users.component';
 
 import { StoreModule } from '@ngrx/store';
-import { reducers } from '../../store/reducers/users.reducers';
+import { reducers } from '../../store/reducers';
 
 import { FormsModule } from '@angular/forms';
 import { GridModule } from '@angular/flex-layout/grid';
@@ -22,7 +22,7 @@ import {UserFormComponent} from '../user-form/user-form.component';
     UserFormComponent
   ],
   imports: [
-    StoreModule.forRoot({ users: reducers }),
+    StoreModule.forRoot(reducers),
     CommonModule,
     BrowserAnimationsModule,
     FormsModule,

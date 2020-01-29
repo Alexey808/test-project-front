@@ -14,8 +14,7 @@ import * as userActions from '../../store/actions/users.actions';
   styleUrls: ['./users.component.scss']
 })
 export class UsersComponent implements OnInit, OnDestroy {
-  // users$: Observable<IUser[]>;
-  users$;
+  users$: Observable<IUser[]>;
   selectedUser: IUser;
   subscription: Subscription = new Subscription();
 
@@ -32,7 +31,9 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   editUser(user: IUser): void {
     this.store.dispatch(new userActions.SelectedUser(user));
-    console.log('store ', this.store.source._value);
+
+    // @ts-ignore
+    console.log('store ', this.store.source);
   }
 
   // getUsers(): void {
@@ -51,12 +52,13 @@ export class UsersComponent implements OnInit, OnDestroy {
 
     const user = { id: '1-new', name: 'example-1-new' };
     this.store.dispatch(new userActions.AddUsers(user));
-    console.log('store ', this.store.source._value);
+    // @ts-ignore
+    console.log('store ', this.store.source);
 
 
-    this.subscription.add(
-      this.userApiService.addUser(user).subscribe()
-    );
+    // this.subscription.add(
+    //   this.userApiService.addUser(user).subscribe()
+    // );
     //
     // const users$: Observable<IUser[]> = this.users$;
     // this.users$ = users$.pipe(
