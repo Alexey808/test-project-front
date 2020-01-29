@@ -9,7 +9,7 @@ import { MaterialModule } from './material.module';
 import { GridModule } from '@angular/flex-layout/grid';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from './store/reducers';
+import { reducers } from './store/reducers/main.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({

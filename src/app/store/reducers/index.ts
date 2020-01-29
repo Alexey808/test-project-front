@@ -1,6 +1,4 @@
-import * as userReducer from '../reducers/users.reducers';
 import { IUser } from '../../api/user/user.interface';
-import { ActionReducerMap } from '@ngrx/store';
 
 export interface IState {
   users: IUser[];
@@ -12,7 +10,3 @@ export const initialState: IState = {
   selectedUser: null
 };
 
-// для модуля, обёртка стора для user
-export const reducers: ActionReducerMap<any> = { // todo type
-  userEntity: userReducer.userReducers
-};
