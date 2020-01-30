@@ -30,9 +30,6 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   editUser(user: IUser): void {
     this.store.dispatch(new ActionSelectedUser(user));
-
-    // @ts-ignore
-    console.log('store ', this.store.source);
   }
 
   // getUsers(): void {

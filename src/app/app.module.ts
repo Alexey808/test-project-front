@@ -11,13 +11,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/reducers/main.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { debugReducer } from './store/reducers/debug.reducer';
+
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(reducers, { metaReducers: debugReducer }),
     StoreDevtoolsModule.instrument(),
     BrowserModule,
     AppRoutingModule,
