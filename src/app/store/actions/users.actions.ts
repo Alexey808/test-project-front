@@ -2,9 +2,10 @@ import { Action } from '@ngrx/store';
 import { IUser } from '../../api/user/user.interface';
 
 export enum TypeUserActions {
-  GET_USERS = '[Users] Get Users',
-  ADD_USER = '[Users] Add User',
-  SELECT_USER = '[User] User select',
+  GET_USERS = '[Users] get users',
+  ADD_USER = '[Users] add user',
+  SELECT_USER = '[Users] select user',
+  LOAD_USERS = '[Users] load users',
 }
 
 export class ActionGetUsers implements Action {
@@ -21,4 +22,9 @@ export class ActionSelectedUser implements Action {
   constructor(public payload: IUser) {}
 }
 
-export type Action = ActionGetUsers | ActionAddUsers | ActionSelectedUser;
+export class ActionLoadUsers implements Action {
+  public readonly type = TypeUserActions.LOAD_USERS;
+  constructor(public payload: IUser[]) {}
+}
+
+export type Action = ActionGetUsers | ActionAddUsers | ActionSelectedUser | ActionLoadUsers;

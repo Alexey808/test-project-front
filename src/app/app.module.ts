@@ -12,6 +12,9 @@ import { StoreModule } from '@ngrx/store';
 import { reducers } from './store/reducers/main.reducer';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { debugReducer } from './store/reducers/debug.reducer';
+import {EffectsModule} from '@ngrx/effects';
+import {UserEffects} from './store/effects/user.effects';
+import {UserEffectsModule} from './store/effects/user-effects.module';
 
 
 @NgModule({
@@ -19,8 +22,10 @@ import { debugReducer } from './store/reducers/debug.reducer';
     AppComponent
   ],
   imports: [
-    StoreModule.forRoot(reducers, { metaReducers: debugReducer }),
-    StoreDevtoolsModule.instrument(),
+    StoreModule.forRoot(reducers, { metaReducers: debugReducer }), // подключение store
+    StoreDevtoolsModule.instrument(), // подключение redux-devtools для хрома
+    EffectsModule.forRoot([]), // регистрация провайдеров для сайдэффектов
+    UserEffectsModule, // пользовательские сайдэффекты
     BrowserModule,
     AppRoutingModule,
     MaterialModule,
