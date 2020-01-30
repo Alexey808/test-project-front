@@ -21,12 +21,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<{ users: IUser[] }>,
     private userApiService: UserApiService
-  ) {
-    this.users$ = store.select(sGetAllUsers);
-  }
+  ) {}
 
   ngOnInit(): void {
   //   this.getUsers();
+    this.users$ = this.store.select(sGetAllUsers);
   }
 
   editUser(user: IUser): void {
@@ -47,24 +46,12 @@ export class UsersComponent implements OnInit, OnDestroy {
   // }
 
   addUser({name}: IUser): void {
-
-    // const user: Omit<IUser, 'id'> = { name };
-
-    const user = { id: '1-new', name: 'example-1-new' };
-    this.store.dispatch(new ActionAddUsers(user));
-    // @ts-ignore
-    console.log('store ', this.store.source);
-
-
-    // this.subscription.add(
-    //   this.userApiService.addUser(user).subscribe()
-    // );
-    //
-    // const users$: Observable<IUser[]> = this.users$;
-    // this.users$ = users$.pipe(
-    //   switchMap((users: IUser[]) => users),
-    //   toArray()
-    // );
+    const user: Omit<IUser, 'id'> = { name };
+    this.subscription.add(
+      this.userApiService.addUser(user).subscribe((res: IUser) => {
+        this.store.dispatch(new ActionAddUsers(res));
+      })
+    );
   }
 
   // saveUser({id, name}: IUser): void {
