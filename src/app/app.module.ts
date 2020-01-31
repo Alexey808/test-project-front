@@ -22,7 +22,8 @@ import {UserEffectsModule} from './store/effects/user-effects.module';
     AppComponent
   ],
   imports: [
-    StoreModule.forRoot(reducers, { metaReducers: debugReducer }), // подключение store
+    // StoreModule.forRoot(reducers, { metaReducers: debugReducer }),
+    StoreModule.forRoot(reducers), // подключение store
     StoreDevtoolsModule.instrument(), // подключение redux-devtools для хрома
     EffectsModule.forRoot([]), // регистрация провайдеров для сайдэффектов
     UserEffectsModule, // пользовательские сайдэффекты

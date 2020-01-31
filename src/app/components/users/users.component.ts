@@ -5,6 +5,7 @@ import { UserApiService } from '../../api/user/user.service';
 import { Store} from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
 import { ActionAddUsers, ActionGetUsers, ActionSelectedUser } from '../../store/actions/users.actions';
+import {UsersService} from './users.service';
 
 
 @Component({
@@ -20,12 +21,13 @@ export class UsersComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<{ users: IUser[] }>,
     private userApiService: UserApiService,
+    private usersService: UsersService,
   ) {
-    this.store.dispatch(new ActionGetUsers());
+    // this.store.dispatch(new ActionGetUsers());
   }
 
   ngOnInit(): void {
-    this.users$ = this.store.select(sGetAllUsers);
+    this.users$ = this.usersService.users$;
   }
 
   editUser(user: IUser): void {
@@ -46,6 +48,9 @@ export class UsersComponent implements OnInit, OnDestroy {
         this.store.dispatch(new ActionAddUsers(res));
       })
     );
+
+    // const user: Omit<IUser, 'id'> = { name };
+    // this.store.dispatch(new ActionAddUsers(user));
   }
 
   // saveUser({id, name}: IUser): void {

@@ -8,11 +8,13 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
   switch (action.type) {
 
     case userAction.TypeUserActions.GET_USERS: {
-      console.log('надо избавится от лишнего редьюса');
+      const users = action.payload;
       return {
         ...state,
+        users
       };
     }
+
     case userAction.TypeUserActions.ADD_USER: {
       const newUser = action.payload;
       return {
@@ -29,14 +31,7 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
       };
     }
 
-    case userAction.TypeUserActions.LOAD_USERS: {
-      console.log('надо избавится от лишнего редьюса');
-      const users = action.payload;
-      return {
-        ...state,
-        users
-      };
-    }
+
 
     default:
       return state;
