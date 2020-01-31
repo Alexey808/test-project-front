@@ -11,6 +11,8 @@ import { IUser } from '../../api/user/user.interface';
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() users$: Observable<IUser[]>;
+
+  // todo попробовать от сюда подписаться на изменения store selectedUser
   // @Input() selectedUser: IUser = {id: '', name: ''};
 
   @Output() eventAddUser = new EventEmitter();
