@@ -6,6 +6,9 @@ export enum TypeUserActions {
   SELECT_USER = '[Users] select user',
   LOAD_USERS = '[Users] load users',
   LOAD_USERS_SUCCESS = '[Users] load users success',
+  UPDATE_USER = '[Users] update user',
+  DELETE_USER = '[Users] delete user',
+  DELETE_USERS = '[Users] delete users'
 }
 
 export class ActionLoadUsers implements Action {
@@ -27,5 +30,25 @@ export class ActionSelectedUser implements Action {
   constructor(public payload: IUser) {}
 }
 
+export class ActionUpdateUser implements Action {
+  public readonly type = TypeUserActions.UPDATE_USER;
+  constructor(public payload: IUser) {}
+}
 
-export type Action = ActionGetUsers | ActionAddUsers | ActionSelectedUser | ActionLoadUsers;
+export class ActionDeleteUser implements Action {
+  public readonly type = TypeUserActions.DELETE_USER;
+  constructor(public payload: IUser) {}
+}
+
+export class ActionDeleteUsers implements Action {
+  public readonly type = TypeUserActions.DELETE_USERS;
+}
+
+
+export type Action = ActionGetUsers
+  | ActionAddUsers
+  | ActionSelectedUser
+  | ActionLoadUsers
+  | ActionUpdateUser
+  | ActionDeleteUser
+  | ActionDeleteUsers;

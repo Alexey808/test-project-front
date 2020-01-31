@@ -2,8 +2,12 @@ import { Injectable } from '@angular/core';
 import {Actions, createEffect, Effect, ofType} from '@ngrx/effects';
 import { UsersService } from '../../components/users/users.service';
 import {map, switchMap, tap} from 'rxjs/operators';
-import { TypeUserActions } from '../actions/users.actions';
+import {ActionSelectedUser, TypeUserActions} from '../actions/users.actions';
 import { UserApiService } from '../../api/user/user.service';
+import {IUser} from '../../api/user/user.interface';
+import {Store} from '@ngrx/store';
+import {sGetSelectedUser} from '../selectors/users.selectors';
+import {Observable} from 'rxjs';
 
 
 @Injectable()
@@ -12,6 +16,7 @@ export class UserEffects {
     private actions$: Actions,
     private userService: UsersService,
     public userApiService: UserApiService,
+    private store: Store<{ users: IUser[] }>,
   ) {}
 
   /* надо подумать как перенести этот функционал загрузки данных в сервис */
@@ -26,33 +31,22 @@ export class UserEffects {
     )
   );
 
-  // loadUsers$ = createEffect(() =>
+  // addUser$ = createEffect(() =>
   //   this.actions$.pipe(
-  //     ofType(TypeUserActions.LOAD_USERS),
-  //     tap(
-  //       this.userApiService.getUsers()
-  //     )
-  //     switchMap(() => this.userApiService.getUsers()
-  //       .pipe(
-  //         map(users => ({type: TypeUserActions.LOAD_USERS_SUCCESS, payload: users}))
+  //     ofType(TypeUserActions.SELECT_USER),
+  //     switchMap((action: ActionSelectedUser) => {
+  //
+  //
+  //       return this.userApiService.s(action.payload).pipe(
+  //         tap((addedUser) => console.log('addUser$ effect', addedUser))
+  //         // map((user) => ())
+  //         //   map(res => ({payload: res}))
   //       )
+  //     }
+  //
   //     )
   //   )
   // );
-
-
-  addUser$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TypeUserActions.ADD_USER),
-      switchMap((user) => this.userApiService.addUser(user)
-        .pipe(
-          tap((addedUser) => console.log(addedUser))
-          // map((user) => ())
-        //   map(res => ({payload: res}))
-        )
-      )
-    )
-  );
 }
 
 

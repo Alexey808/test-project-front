@@ -32,7 +32,7 @@ export class UserApiService {
     );
   }
 
-  addUser({name}: IUser) {
+  addUser({name}: IUser): Observable<any> {
     return this.http.post<IUser>(this.url, {name}, this.httpOptions).pipe(
       catchError(handleError<any>('addUser', {name}))
     );

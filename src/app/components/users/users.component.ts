@@ -4,7 +4,14 @@ import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import {select, Store} from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
-import {ActionAddUsers, ActionGetUsers, ActionLoadUsers, ActionSelectedUser} from '../../store/actions/users.actions';
+import {
+  ActionAddUsers,
+  ActionDeleteUser, ActionDeleteUsers,
+  ActionGetUsers,
+  ActionLoadUsers,
+  ActionSelectedUser,
+  ActionUpdateUser
+} from '../../store/actions/users.actions';
 import {UsersService} from './users.service';
 import {share, switchMap, tap} from 'rxjs/operators';
 
@@ -49,41 +56,29 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
   }
 
-  // saveUser({id, name}: IUser): void {
-  //   this.subscription.add(
-  //     this.userApiService.updateUser({id , name}).subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  saveUser(user: IUser): void {
+    this.subscription.add(
+      this.userApiService.updateUser(user).subscribe((res: IUser) => {
+        this.store.dispatch(new ActionUpdateUser(res));
+      })
+    );
+  }
 
-  // deleteUser({id}: IUser): void {
-  //   this.subscription.add(
-  //     this.userApiService.deleteUser(id).subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  deleteUser({id}: IUser): void {
+    this.subscription.add(
+      this.userApiService.deleteUser(id).subscribe((res: IUser) => {
+        this.store.dispatch(new ActionDeleteUser(res));
+      })
+    );
+  }
 
-  // deleteAllUsers(): void {
-  //   this.subscription.add(
-  //     this.userApiService.deleteAllUsers().subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  deleteAllUsers(): void {
+    this.subscription.add(
+      this.userApiService.deleteAllUsers().subscribe(() => {
+        this.store.dispatch(new ActionDeleteUsers());
+      })
+    );
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {
