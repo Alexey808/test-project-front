@@ -7,7 +7,13 @@ export const getSelectedUsers = (state: IState) => state.selectedUser;
 export function userReducers(state: IState = initialState, action: userAction.Action) {
   switch (action.type) {
 
-    case userAction.TypeUserActions.GET_USERS: {
+    case userAction.TypeUserActions.LOAD_USERS: {
+      return {
+        ...state,
+      };
+    }
+
+    case userAction.TypeUserActions.LOAD_USERS_SUCCESS: {
       const users = action.payload;
       return {
         ...state,

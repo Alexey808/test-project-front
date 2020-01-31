@@ -32,9 +32,9 @@ export class UserApiService {
     );
   }
 
-  addUser(user: Omit<IUser, 'id'>): Observable<Omit<IUser, 'id'>> { // todo привести типы в нормальный вид
-    return this.http.post<Omit<IUser, 'id'>>(this.url, user, this.httpOptions).pipe(
-      catchError(handleError<Omit<IUser, 'id'>>('addUser', user))
+  addUser({name}: IUser) {
+    return this.http.post<IUser>(this.url, {name}, this.httpOptions).pipe(
+      catchError(handleError<any>('addUser', {name}))
     );
   }
 

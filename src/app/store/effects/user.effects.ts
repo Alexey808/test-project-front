@@ -14,17 +14,17 @@ export class UserEffects {
     public userApiService: UserApiService,
   ) {}
 
-  // todo подумать. данный эффект поржадает 2 экшина и 2 редьюса для одной операции (загрузки данных)
-  // loadUsers$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(TypeUserActions.LOAD_USERS),
-  //     switchMap(() => this.userApiService.getUsers()
-  //       .pipe(
-  //         map(users => ({type: TypeUserActions.LOAD_USERS_SUCCESS, payload: users}))
-  //       )
-  //     )
-  //   )
-  // );
+  /* надо подумать как перенести этот функционал загрузки данных в сервис */
+  loadUsers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TypeUserActions.LOAD_USERS),
+      switchMap(() => this.userApiService.getUsers()
+        .pipe(
+          map(users => ({type: TypeUserActions.LOAD_USERS_SUCCESS, payload: users}))
+        )
+      )
+    )
+  );
 
   // loadUsers$ = createEffect(() =>
   //   this.actions$.pipe(
@@ -41,16 +41,18 @@ export class UserEffects {
   // );
 
 
-  // addUser$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(TypeUserActions.ADD_USER),
-  //     switchMap((user) => this.userApiService.addUser(user)
-  //       .pipe(
-  //         map(user => ({payload: user}))
-  //       )
-  //     )
-  //   )
-  // );
+  addUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TypeUserActions.ADD_USER),
+      switchMap((user) => this.userApiService.addUser(user)
+        .pipe(
+          tap((addedUser) => console.log(addedUser))
+          // map((user) => ())
+        //   map(res => ({payload: res}))
+        )
+      )
+    )
+  );
 }
 
 

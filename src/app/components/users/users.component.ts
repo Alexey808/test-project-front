@@ -2,10 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
 import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
-import { Store} from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
-import { ActionAddUsers, ActionGetUsers, ActionSelectedUser } from '../../store/actions/users.actions';
+import {ActionAddUsers, ActionGetUsers, ActionLoadUsers, ActionSelectedUser} from '../../store/actions/users.actions';
 import {UsersService} from './users.service';
+import {share, switchMap, tap} from 'rxjs/operators';
 
 
 @Component({
@@ -22,12 +23,11 @@ export class UsersComponent implements OnInit, OnDestroy {
     private store: Store<{ users: IUser[] }>,
     private userApiService: UserApiService,
     private usersService: UsersService,
-  ) {
-    // this.store.dispatch(new ActionGetUsers());
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.users$ = this.usersService.users$;
+    this.store.dispatch(new ActionLoadUsers());
+    this.users$ = this.store.select(sGetAllUsers);
   }
 
   editUser(user: IUser): void {
@@ -41,16 +41,12 @@ export class UsersComponent implements OnInit, OnDestroy {
   // }
 
   addUser({name}: IUser): void {
-    const user: Omit<IUser, 'id'> = { name };
+    const newUser: IUser = {name, id: ''};
     this.subscription.add(
-      // спрятать обращение к userApiService в миделвер
-      this.userApiService.addUser(user).subscribe((res: IUser) => {
+      this.userApiService.addUser(newUser).subscribe((res: IUser) => {
         this.store.dispatch(new ActionAddUsers(res));
       })
     );
-
-    // const user: Omit<IUser, 'id'> = { name };
-    // this.store.dispatch(new ActionAddUsers(user));
   }
 
   // saveUser({id, name}: IUser): void {
