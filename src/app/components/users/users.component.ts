@@ -2,10 +2,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
 import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
-import { switchMap, toArray } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
+import {select, Store} from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
-import { ActionAddUsers, ActionSelectedUser } from '../../store/actions/users.actions';
+import {
+  ActionAddUsers,
+  ActionDeleteUser, ActionDeleteUsers,
+  ActionGetUsers,
+  ActionLoadUsers,
+  ActionSelectedUser,
+  ActionUpdateUser
+} from '../../store/actions/users.actions';
+import {UsersService} from './users.service';
+import {share, switchMap, tap} from 'rxjs/operators';
 
 
 @Component({
@@ -20,20 +28,18 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<{ users: IUser[] }>,
-    private userApiService: UserApiService
+    private userApiService: UserApiService,
+    private usersService: UsersService,
   ) {}
 
   ngOnInit(): void {
+    this.store.dispatch(new ActionLoadUsers());
     this.users$ = this.store.select(sGetAllUsers);
   }
 
   editUser(user: IUser): void {
     this.store.dispatch(new ActionSelectedUser(user));
   }
-
-  // getUsers(): void {
-  //   this.users$ = this.userApiService.getUsers();
-  // }
 
   // getUser({id}: IUser): void {
   //   this.subscription.add(
@@ -42,50 +48,37 @@ export class UsersComponent implements OnInit, OnDestroy {
   // }
 
   addUser({name}: IUser): void {
-    const user: Omit<IUser, 'id'> = { name };
-
+    const newUser: IUser = {name, id: ''};
     this.subscription.add(
-      this.userApiService.addUser(user).subscribe((res: IUser) => {
+      this.userApiService.addUser(newUser).subscribe((res: IUser) => {
         this.store.dispatch(new ActionAddUsers(res));
       })
     );
   }
 
-  // saveUser({id, name}: IUser): void {
-  //   this.subscription.add(
-  //     this.userApiService.updateUser({id , name}).subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  saveUser(user: IUser): void {
+    this.subscription.add(
+      this.userApiService.updateUser(user).subscribe((res: IUser) => {
+        this.store.dispatch(new ActionUpdateUser(res));
+      })
+    );
+  }
 
-  // deleteUser({id}: IUser): void {
-  //   this.subscription.add(
-  //     this.userApiService.deleteUser(id).subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  deleteUser({id}: IUser): void {
+    this.subscription.add(
+      this.userApiService.deleteUser(id).subscribe((res: IUser) => {
+        this.store.dispatch(new ActionDeleteUser(res));
+      })
+    );
+  }
 
-  // deleteAllUsers(): void {
-  //   this.subscription.add(
-  //     this.userApiService.deleteAllUsers().subscribe()
-  //   );
-  //
-  //   const users$: Observable<IUser[]> = this.users$;
-  //   this.users$ = users$.pipe(
-  //     switchMap((users: IUser[]) => users),
-  //     toArray()
-  //   );
-  // }
+  deleteAllUsers(): void {
+    this.subscription.add(
+      this.userApiService.deleteAllUsers().subscribe(() => {
+        this.store.dispatch(new ActionDeleteUsers());
+      })
+    );
+  }
 
   ngOnDestroy(): void {
     if (this.subscription) {

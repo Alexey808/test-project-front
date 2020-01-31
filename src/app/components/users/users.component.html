@@ -5,12 +5,10 @@
     <div fxFlex="50%" class="layout-block">
       <app-user-form
         [users$]="users$"
-        [selectedUser]="selectedUser"
         (eventAddUser)="addUser($event)"
         (eventEditUser)="saveUser($event)"
         (eventDeleteUser)="deleteUser($event)"
         (eventDeleteUsers)="deleteAllUsers()"
-        (eventGetUser)="getUser($event)"
       ></app-user-form>
     </div>
   </div>

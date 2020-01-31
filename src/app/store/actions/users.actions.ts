@@ -2,13 +2,22 @@ import { Action } from '@ngrx/store';
 import { IUser } from '../../api/user/user.interface';
 
 export enum TypeUserActions {
-  GET_USERS = '[Users] Get Users',
-  ADD_USER = '[Users] Add User',
-  SELECT_USER = '[User] User select',
+  ADD_USER = '[Users] add user',
+  SELECT_USER = '[Users] select user',
+  LOAD_USERS = '[Users] load users',
+  LOAD_USERS_SUCCESS = '[Users] load users success',
+  UPDATE_USER = '[Users] update user',
+  DELETE_USER = '[Users] delete user',
+  DELETE_USERS = '[Users] delete users'
+}
+
+export class ActionLoadUsers implements Action {
+  public readonly type = TypeUserActions.LOAD_USERS;
 }
 
 export class ActionGetUsers implements Action {
-  public readonly type = TypeUserActions.GET_USERS;
+  public readonly type = TypeUserActions.LOAD_USERS_SUCCESS;
+  constructor(public payload: IUser[]) {}
 }
 
 export class ActionAddUsers implements Action {
@@ -21,4 +30,25 @@ export class ActionSelectedUser implements Action {
   constructor(public payload: IUser) {}
 }
 
-export type Action = ActionGetUsers | ActionAddUsers | ActionSelectedUser;
+export class ActionUpdateUser implements Action {
+  public readonly type = TypeUserActions.UPDATE_USER;
+  constructor(public payload: IUser) {}
+}
+
+export class ActionDeleteUser implements Action {
+  public readonly type = TypeUserActions.DELETE_USER;
+  constructor(public payload: IUser) {}
+}
+
+export class ActionDeleteUsers implements Action {
+  public readonly type = TypeUserActions.DELETE_USERS;
+}
+
+
+export type Action = ActionGetUsers
+  | ActionAddUsers
+  | ActionSelectedUser
+  | ActionLoadUsers
+  | ActionUpdateUser
+  | ActionDeleteUser
+  | ActionDeleteUsers;

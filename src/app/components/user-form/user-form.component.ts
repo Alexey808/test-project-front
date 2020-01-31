@@ -11,7 +11,7 @@ import { IUser } from '../../api/user/user.interface';
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() users$: Observable<IUser[]>;
-  @Input() selectedUser: IUser = {id: '', name: ''};
+  // @Input() selectedUser: IUser = {id: '', name: ''};
 
   @Output() eventAddUser = new EventEmitter();
   @Output() eventEditUser = new EventEmitter();
