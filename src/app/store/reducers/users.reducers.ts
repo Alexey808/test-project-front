@@ -2,9 +2,13 @@ import * as userAction from '../actions/users.actions';
 import { initialState, IState } from './index';
 
 export const getUsers = (state: IState) => state.users;
-export const getSelectedUsers = (state: IState) => state.selectedUser;
+
+export const getSelectUsers =
+  (state: IState) =>
+    state.selectUser;
 
 export function userReducers(state: IState = initialState, action: userAction.Action) {
+
   switch (action.type) {
 
     case userAction.TypeUserActions.LOAD_USERS: {
@@ -30,10 +34,10 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
     }
 
     case userAction.TypeUserActions.SELECT_USER: {
-      const selectedUser = action.payload;
+      const selectUser = action.payload;
       return {
         ...state,
-        selectedUser
+        selectUser
       };
     }
 

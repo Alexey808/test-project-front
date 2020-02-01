@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import {Actions, createEffect, Effect, ofType} from '@ngrx/effects';
 import { UsersService } from '../../components/users/users.service';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {ActionSelectedUser, TypeUserActions} from '../actions/users.actions';
+import {ActionSelectUser, TypeUserActions} from '../actions/users.actions';
 import { UserApiService } from '../../api/user/user.service';
 import {IUser} from '../../api/user/user.interface';
 import {Store} from '@ngrx/store';
-import {sGetSelectedUser} from '../selectors/users.selectors';
+import {sGetSelectUser} from '../selectors/users.selectors';
 import {Observable} from 'rxjs';
 
 
@@ -34,7 +34,7 @@ export class UserEffects {
   // addUser$ = createEffect(() =>
   //   this.actions$.pipe(
   //     ofType(TypeUserActions.SELECT_USER),
-  //     switchMap((action: ActionSelectedUser) => {
+  //     switchMap((action: ActionSelectUser) => {
   //
   //
   //       return this.userApiService.s(action.payload).pipe(
