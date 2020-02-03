@@ -9,7 +9,7 @@ import {
   ActionDeleteUser, ActionDeleteUsers,
   ActionGetUsers,
   ActionLoadUsers,
-  ActionSelectedUser,
+  ActionSelectUser,
   ActionUpdateUser
 } from '../../store/actions/users.actions';
 import {UsersService} from './users.service';
@@ -23,11 +23,11 @@ import {share, switchMap, tap} from 'rxjs/operators';
 })
 export class UsersComponent implements OnInit, OnDestroy {
   users$: Observable<IUser[]>;
-  selectedUser: IUser;
+  selectUser: IUser;
   subscription: Subscription = new Subscription();
 
   constructor(
-    private store: Store<{ users: IUser[] }>,
+    private store: Store<{ users: IUser[], selectUser: IUser }>,
     private userApiService: UserApiService,
     private usersService: UsersService,
   ) {}
@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   editUser(user: IUser): void {
-    this.store.dispatch(new ActionSelectedUser(user));
+    this.store.dispatch(new ActionSelectUser(user));
   }
 
   // getUser({id}: IUser): void {

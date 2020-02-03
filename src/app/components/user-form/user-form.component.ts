@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { IUser } from '../../api/user/user.interface';
+import {select, Store} from '@ngrx/store';
+import {ActionSelectUser} from '../../store/actions/users.actions';
+import {sGetSelectUser} from '../../store/selectors/users.selectors';
 
 @Component({
   selector: 'app-user-form',
@@ -9,11 +12,9 @@ import { IUser } from '../../api/user/user.interface';
   styleUrls: ['./user-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserFormComponent implements OnInit, OnChanges {
+export class UserFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() users$: Observable<IUser[]>;
-
-  // todo попробовать от сюда подписаться на изменения store selectedUser
-  // @Input() selectedUser: IUser = {id: '', name: ''};
+  // @Input() selectUser: IUser = {id: '', name: ''};
 
   @Output() eventAddUser = new EventEmitter();
   @Output() eventEditUser = new EventEmitter();
@@ -22,8 +23,14 @@ export class UserFormComponent implements OnInit, OnChanges {
   @Output() eventGetUser = new EventEmitter();
 
   userForm: FormGroup;
+  subscription: Subscription = new Subscription();
+  // selectUser: IUser;
 
-  constructor() { }
+  constructor(
+    private store: Store<{ users: IUser[], selectUser: IUser }>,
+  ) {
+
+  }
 
   ngOnInit() {
     this.userForm = new FormGroup({
@@ -36,15 +43,27 @@ export class UserFormComponent implements OnInit, OnChanges {
         userId: new FormControl('', [])
       })
     });
+
+
+    this.subscription.add(
+      this.store.pipe(
+        select(sGetSelectUser)
+      ).subscribe((user) => {
+        this.userForm.get('baseInfo').setValue({
+          userId: user.id,
+          userName: user.name
+        });
+      })
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedUser) {
-      this.userForm.get('baseInfo').setValue({
-        userId: changes.selectedUser.currentValue.id,
-        userName: changes.selectedUser.currentValue.name
-      });
-    }
+    // if (changes.selectUser) {
+    //   this.userForm.get('baseInfo').setValue({
+    //     userId: changes.selectUser.currentValue.id,
+    //     userName: changes.selectUser.currentValue.name
+    //   });
+    // }
     if (changes.user$) {
       this.users$ = changes.users$.currentValue;
     }
@@ -91,5 +110,9 @@ export class UserFormComponent implements OnInit, OnChanges {
         return '';
     }
   }
-
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }

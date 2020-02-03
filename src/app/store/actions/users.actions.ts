@@ -25,7 +25,7 @@ export class ActionAddUsers implements Action {
   constructor(public payload: IUser) {}
 }
 
-export class ActionSelectedUser implements Action {
+export class ActionSelectUser implements Action {
   public readonly type = TypeUserActions.SELECT_USER;
   constructor(public payload: IUser) {}
 }
@@ -47,7 +47,7 @@ export class ActionDeleteUsers implements Action {
 
 export type Action = ActionGetUsers
   | ActionAddUsers
-  | ActionSelectedUser
+  | ActionSelectUser
   | ActionLoadUsers
   | ActionUpdateUser
   | ActionDeleteUser
