@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
 import { Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
 import {
   ActionAddUsers,
@@ -19,7 +19,7 @@ import {share, switchMap, tap} from 'rxjs/operators';
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit, OnDestroy {
   users$: Observable<IUser[]>;
@@ -29,7 +29,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<{ users: IUser[], selectUser: IUser }>,
     private userApiService: UserApiService,
-    private usersService: UsersService,
+    // private usersService: UsersService,
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   editUser(user: IUser): void {
-    this.store.dispatch(new ActionSelectUser(user));
+    this.selectUser = user;
   }
 
   // getUser({id}: IUser): void {

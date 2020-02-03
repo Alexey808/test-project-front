@@ -17,7 +17,7 @@ export class UsersService {
     private store: Store<{ users: IUser[] }>
   ) { }
 
-  /* Попытка избавится от загрузки данных в сайдэффекте ngrx */
+  /* Попытка избавится от загрузки данных в сайдэффекте ngrx, зацикливается из зв dispatch */
   // public loadUsers$ = this.store.pipe(
   //   switchMap(() => this.userApiService.getUsers()),
   //   tap((users) => this.store.dispatch(new ActionGetUsers(users))),

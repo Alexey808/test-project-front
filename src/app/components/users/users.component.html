@@ -5,6 +5,7 @@
     <div fxFlex="50%" class="layout-block">
       <app-user-form
         [users$]="users$"
+        [selectUser]="selectUser"
         (eventAddUser)="addUser($event)"
         (eventEditUser)="saveUser($event)"
         (eventDeleteUser)="deleteUser($event)"
@@ -12,7 +13,6 @@
       ></app-user-form>
     </div>
   </div>
-
 
   <mat-card class="card">
     <ng-template [ngTemplateOutlet]="userTemplate"

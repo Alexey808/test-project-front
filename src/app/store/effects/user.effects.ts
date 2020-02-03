@@ -6,7 +6,7 @@ import {ActionSelectUser, TypeUserActions} from '../actions/users.actions';
 import { UserApiService } from '../../api/user/user.service';
 import {IUser} from '../../api/user/user.interface';
 import {Store} from '@ngrx/store';
-import {sGetSelectUser} from '../selectors/users.selectors';
+// import {sGetSelectUser} from '../selectors/users.selectors';
 import {Observable} from 'rxjs';
 
 
