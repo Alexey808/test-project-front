@@ -38,12 +38,14 @@ export class UserApiService {
     );
   }
 
-  updateUser(user: IUser): Observable<IUser> {
-    const url = `${this.url}/${user.id}`;
-
-    return this.http.put<IUser>(url, user, this.httpOptions).pipe(
-      catchError(handleError<IUser>('updateUser', user))
-    );
+  updateUser(users: IUser[]) {
+    console.log(users);
+    // const usersIds: string = users.map((user: IUser) => user.id).join(',');
+    // const url = `${this.url}/${usersIds}`;
+    //
+    // return this.http.put<IUser>(url, user, this.httpOptions).pipe(
+    //   catchError(handleError<IUser>('updateUser', user))
+    // );
   }
 
   deleteUser(id: string): Observable<any> { // todo type

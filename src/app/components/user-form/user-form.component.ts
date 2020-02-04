@@ -11,12 +11,17 @@ import {
   SimpleChanges, TemplateRef,
   ViewChild, ViewChildren
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {fromEvent, Observable, Subscription} from 'rxjs';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {fromEvent, Observable, Subject, Subscription} from 'rxjs';
 import { IUser } from '../../api/user/user.interface';
 import {select, Store} from '@ngrx/store';
 import {ActionSelectUser} from '../../store/actions/users.actions';
 // import {sGetSelectUser} from '../../store/selectors/users.selectors';
+
+interface IUserFormControl {
+  userId: string;
+  userName: string;
+}
 
 @Component({
   selector: 'app-user-form',
@@ -24,28 +29,21 @@ import {ActionSelectUser} from '../../store/actions/users.actions';
   styleUrls: ['./user-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserFormComponent implements OnInit, OnChanges, AfterViewInit {
+export class UserFormComponent implements OnInit, OnChanges {
   @Input() users$: Observable<IUser[]>;
   @Input() selectUser: IUser = {id: '', name: ''};
 
   @Output() eventAddUser = new EventEmitter();
   @Output() eventEditUser = new EventEmitter();
+  @Output() eventSaveUser = new EventEmitter();
   @Output() eventDeleteUser = new EventEmitter();
   @Output() eventDeleteUsers = new EventEmitter();
   @Output() eventGetUser = new EventEmitter();
-
-  // @ViewChild('inputName', {static: false}) hrefInputName: ElementRef<any>;
-  @ViewChild('inputName', {static: false}) refInputName: ElementRef;
 
   userForm: FormGroup;
 
   constructor() {}
 
-  ngAfterViewInit(): void {
-    // this.userForm.get('baseInfo').value
-
-    this.subChangeInputName();
-  }
 
   ngOnInit() {
     this.userForm = new FormGroup({
@@ -58,6 +56,7 @@ export class UserFormComponent implements OnInit, OnChanges, AfterViewInit {
         userId: new FormControl('', [])
       })
     });
+    this.subChangeInputName();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -79,7 +78,11 @@ export class UserFormComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   saveUser(): void {
-    const { userId: id , userName: name } = this.userForm.get('baseInfo').value;
+      this.eventSaveUser.emit();
+  }
+
+  editSelectedUser(): void {
+    const {userId: id , userName: name}: IUserFormControl = this.userForm.get('baseInfo').value;
     if (!id || !name) { return; }
     this.eventEditUser.emit({id , name});
   }
@@ -115,18 +118,14 @@ export class UserFormComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   subChangeInputName(): void {
-    const refInputName$: Observable<ElementRef> = fromEvent(this.refInputName.nativeElement, 'input');
-    refInputName$.subscribe((e: ElementRef<any>) => {
-      this.eventEditUser.emit({
-        id: this.getUserParams('id'),
-        name: e.refInputName.value
-      });
+    this.userForm.get('baseInfo').valueChanges.subscribe((change: IUserFormControl) => {
+      if (change.userId) {
+        const newUser: IUser = {
+          id: this.getUserParams('id'),
+          name: change.userName,
+        };
+        this.eventEditUser.emit(newUser);
+      }
     });
-  }
-
-  changeInput(e) {
-    console.log(this.inputName, e);
-
-    console.log('2inputname = ', this.inputName);
   }
 }
