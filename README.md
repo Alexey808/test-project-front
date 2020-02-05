@@ -1,3 +1,6 @@
+# Запуск проекта 
+1. yarn start
+
 
 ## Proxy config
 
@@ -7,7 +10,7 @@
     "/user/*": {
       "target": "http://localhost:3700",
       "secure": false,
-      "logLevel": "debug"
+      "logLevel": "debug",
       "changeOrigin": false,
       "pathRewrite": {
         "^/api/settings": "/api/app/settings",
