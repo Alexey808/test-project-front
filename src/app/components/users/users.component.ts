@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
-import { Observable, Subscription} from 'rxjs';
+import {from, Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { select, Store } from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
@@ -62,46 +62,14 @@ export class UsersComponent implements OnInit, OnDestroy {
       this.userEditIds.push(updatedUser.id);
     }
 
-    // const users$: Observable<IUser[]> = this.users$;
-    const syka$ = this.users$.pipe(
-      map((users: IUser[]) => {
-        return users.map((user: IUser) => {
-          if (user.id === updatedUser.id) {
-            user = updatedUser;
-          }
-          return user;
-        });
-        // console.log('1->', t);
-        // return t;
-      },
-        (e) => console.error(e)),
-      // switchMap((users: IUser[]) => {
-      //   // console.log('2->', users);
-      //   return users;
-      // }),
-      toArray()
+    this.users$ = this.users$.pipe(
+      switchMap((users: IUser[]) => from(users).pipe(
+        map((user: IUser) =>
+          user.id === updatedUser.id ? updatedUser : user
+        ),
+        toArray()
+      ))
     );
-
-
-
-
-//trtr
-    // console.log(u$);
-    // u$.subscribe(x => console.log('x -> ', x));
-    // this.users$.subscribe(x => console.log('this.users -> ', x));
-    syka$.subscribe(x => console.log('thisusers$ -> ', x));
-    // this.users$ = thisusers$;
-
-    // this.users$ = usersUpdate$.pipe(
-    //   switchMap((users: IUser[]) => users),
-    // );
-
-
-    // const users$: Observable<IUser[]> = this.users$;
-    // this.users$ = users$.pipe(
-    //   switchMap((users: IUser[]) => users),
-    //   toArray()
-    // );
   }
 
   saveUser(): void {
@@ -114,8 +82,6 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
 
     console.log(this.userEditIds);
-
-
       // this.subscription.add(
       //   this.userApiService.updateUser(updatedUsers).subscribe((res: IUser) => {
       //     this.store.dispatch(new ActionUpdateUser(res));
