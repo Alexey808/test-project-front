@@ -74,20 +74,29 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   saveUser(): void {
-    this.subscription.add(
-      this.users$.subscribe((users: IUser[]) => {
-        users.filter((user: IUser) =>
+    // фильтруем тех пользователей которые были изменены
+    const newUsers$ = this.users$.pipe(
+      switchMap((users: IUser[]) => from(users).pipe(
+        filter((user: IUser) =>
           this.userEditIds.includes(user.id)
-        );
-      })
+        ),
+        toArray()
+      ))
     );
 
-    console.log(this.userEditIds);
-      // this.subscription.add(
-      //   this.userApiService.updateUser(updatedUsers).subscribe((res: IUser) => {
-      //     this.store.dispatch(new ActionUpdateUser(res));
-      //   })
-      // );
+    // вытаскиваем их
+    let newUsers = [];
+    this.subscription.add(
+      newUsers$.subscribe((users: IUser[]) => newUsers = users),
+    );
+
+    // отправляем
+    this.subscription.add(
+      this.userApiService.updateUsers(newUsers).subscribe((res: IUser[]) => {
+        console.log('res -> ', res);
+        //this.store.dispatch(new ActionUpdateUser(res));
+      })
+    );
   }
 
   deleteUser({id}: IUser): void {

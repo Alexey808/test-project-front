@@ -37,19 +37,19 @@ export class UserApiService {
   }
 
   addUser({name}: IUser): Observable<any> {
-    return this.http.post<IUser>(this.url, {name}, this.httpOptions).pipe(
+    return this.http.post<IUser[]>(this.url, {name}, this.httpOptions).pipe(
       catchError(handleError<any>('addUser', {name}))
     );
   }
 
-  updateUser(users: IUser[]) {
-    console.log(users);
+  updateUsers(users: IUser[]) {
+
     // const usersIds: string = users.map((user: IUser) => user.id).join(',');
-    // const url = `${this.url}/${usersIds}`;
-    //
-    // return this.http.put<IUser>(url, user, this.httpOptions).pipe(
-    //   catchError(handleError<IUser>('updateUser', user))
-    // );
+    const url = `${this.url}`;
+    console.log(url, users);
+    return this.http.put<IUser[]>(url, users, this.httpOptions).pipe(
+      catchError(handleError<IUser[]>('updateUser', users))
+    );
   }
 
   deleteUser(id: string): Observable<any> { // todo type
