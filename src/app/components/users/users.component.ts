@@ -36,6 +36,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.dispatch(new ActionLoadUsers());
     this.users$ = this.store.select(sGetAllUsers);
+    // this.users$ = this.usersService.loadUsers$;
   }
 
   editUser(user: IUser): void {

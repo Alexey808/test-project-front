@@ -18,6 +18,7 @@ export class UsersService {
   ) { }
 
   /* Попытка избавится от загрузки данных в сайдэффекте ngrx, зацикливается из зв dispatch */
+  // возможно проблема решается тут в разделе "Асинхронные пайпы" https://habr.com/ru/company/ruvds/blog/485642/
   // public loadUsers$ = this.store.pipe(
   //   switchMap(() => this.userApiService.getUsers()),
   //   tap((users) => this.store.dispatch(new ActionGetUsers(users))),
