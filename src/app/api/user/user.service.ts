@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {IUser} from './user.interface';
-import {catchError, tap} from 'rxjs/operators';
+import {catchError, debounceTime, distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators';
 import {handleError} from '../helper/handle-error';
 
 
@@ -21,6 +21,10 @@ export class UserApiService {
 
   getUsers(): Observable<IUser[]> {
     return this.http.get<IUser[]>(this.url).pipe(
+      distinctUntilChanged(), // если новые значения отличаются от предыдущих
+      // filter(Boolean), // убираем пустые элементы
+      // debounceTime(300), // выжидаем время, выполняя поледний запрос
+      // switchMap((res: Response) => res.json()),
       catchError(handleError('getUser', []))
     );
   }
