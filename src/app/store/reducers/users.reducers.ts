@@ -1,5 +1,6 @@
 import * as userAction from '../actions/users.actions';
 import { initialState, IState } from './index';
+import { IUser } from '../../api/user/user.interface';
 
 export const getUsers = (state: IState) => state.users;
 
@@ -43,8 +44,24 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
 
     case userAction.TypeUserActions.UPDATE_USER: {
       const updateDataUser = action.payload;
-      const users = state.users.map((user) => {
+      const users = state.users.map((user: IUser) => {
         if (user.id === updateDataUser.id) { user = updateDataUser; }
+        return user;
+      });
+
+      return {
+        ...state,
+        users
+      };
+    }
+
+    case userAction.TypeUserActions.UPDATE_USERS: {
+      const updateDataUsers = action.payload;
+      const users = state.users.map((user: IUser) => {
+        for (const userUpdate of updateDataUsers) {
+          if (user.id === userUpdate.id) { user = userUpdate; }
+        }
+
         return user;
       });
 
@@ -56,7 +73,7 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
 
     case userAction.TypeUserActions.DELETE_USER: {
       const deleteUser = action.payload;
-      const users = state.users.filter((user) => user.id !== deleteUser.id);
+      const users = state.users.filter((user: IUser) => user.id !== deleteUser.id);
 
       return {
         ...state,

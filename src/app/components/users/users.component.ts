@@ -1,19 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
-import {from, Observable, Subscription} from 'rxjs';
+import { from, Observable, Subscription} from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { select, Store } from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
 import {
-  ActionAddUsers,
-  ActionDeleteUser, ActionDeleteUsers,
-  ActionGetUsers,
+  ActionAddUser,
+  ActionDeleteUser,
+  ActionDeleteUsers,
   ActionLoadUsers,
-  ActionSelectUser,
-  ActionUpdateUser
+  ActionUpdateUsers
 } from '../../store/actions/users.actions';
-import {UsersService} from './users.service';
-import {filter, map, share, switchMap, tap, toArray} from 'rxjs/operators';
+import { UsersService } from './users.service';
+import { filter, map, share, switchMap, tap, toArray } from 'rxjs/operators';
 
 
 @Component({
@@ -43,17 +42,20 @@ export class UsersComponent implements OnInit, OnDestroy {
     this.selectUser = user;
   }
 
-  // getUser({id}: IUser): void {
-  //   this.subscription.add(
-  //     this.userApiService.getUser(id).subscribe()
-  //   );
-  // }
+  getUser({id}: IUser): void {
+    this.subscription.add(
+      this.userApiService.getUser(id).pipe(
+        // tslint:disable-next-line:no-console
+        tap((user: IUser) => console.info('User test load: ', user))
+      ).subscribe()
+    );
+  }
 
   addUser({name}: IUser): void {
     const newUser: IUser = {name, id: ''};
     this.subscription.add(
       this.userApiService.addUser(newUser).subscribe((res: IUser) => {
-        this.store.dispatch(new ActionAddUsers(res));
+        this.store.dispatch(new ActionAddUser(res));
       })
     );
   }
@@ -91,15 +93,24 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
 
     // отправляем
-    this.subscription.add(
-      this.userApiService.updateUsers(newUsers).subscribe((res: IUser[]) => {
-        console.log('res -> ', res);
-        //this.store.dispatch(new ActionUpdateUser(res));
-      })
-    );
+    if (!!newUsers.length) {
+      this.subscription.add(
+        this.userApiService.updateUsers(newUsers).subscribe((res: IUser[]) => {
+          this.store.dispatch(new ActionUpdateUsers(res));
+        })
+      );
+    }
+
   }
 
   deleteUser({id}: IUser): void {
+    this.users$ = this.users$.pipe(
+      switchMap((users: IUser[]) => from(users).pipe(
+        filter((user) => user.id !== id),
+        toArray()
+      ))
+    );
+
     this.subscription.add(
       this.userApiService.deleteUser(id).subscribe((res: IUser) => {
         this.store.dispatch(new ActionDeleteUser(res));
