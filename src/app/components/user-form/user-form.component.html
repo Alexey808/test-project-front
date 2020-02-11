@@ -3,7 +3,7 @@
     <div formGroupName="baseInfo" class="section-card" fxLayout fxLayoutAlign="start center" fxLayoutGap="16px">
       <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
-        <input matInput type="text" formControlName="userName" placeholder="Name">
+        <input matInput type="text" formControlName="userName" placeholder="Name" #inputName>
         <mat-icon matSuffix color="primary">sentiment_very_satisfied</mat-icon>
         <mat-hint>A-z, А-я, 0-9</mat-hint>
       </mat-form-field>

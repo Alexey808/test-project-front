@@ -1,7 +1,27 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component, ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges, TemplateRef,
+  ViewChild, ViewChildren
+} from '@angular/core';
+import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
+import {fromEvent, Observable, Subject, Subscription} from 'rxjs';
 import { IUser } from '../../api/user/user.interface';
+import {select, Store} from '@ngrx/store';
+import {ActionSelectUser} from '../../store/actions/users.actions';
+// import {sGetSelectUser} from '../../store/selectors/users.selectors';
+
+interface IUserFormControl {
+  userId: string;
+  userName: string;
+}
 
 @Component({
   selector: 'app-user-form',
@@ -11,17 +31,19 @@ import { IUser } from '../../api/user/user.interface';
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() users$: Observable<IUser[]>;
-  @Input() selectedUser: IUser = {id: '', name: ''};
+  @Input() selectUser: IUser = {id: '', name: ''};
 
   @Output() eventAddUser = new EventEmitter();
   @Output() eventEditUser = new EventEmitter();
+  @Output() eventSaveUser = new EventEmitter();
   @Output() eventDeleteUser = new EventEmitter();
   @Output() eventDeleteUsers = new EventEmitter();
   @Output() eventGetUser = new EventEmitter();
 
   userForm: FormGroup;
 
-  constructor() { }
+  constructor() {}
+
 
   ngOnInit() {
     this.userForm = new FormGroup({
@@ -34,13 +56,14 @@ export class UserFormComponent implements OnInit, OnChanges {
         userId: new FormControl('', [])
       })
     });
+    this.subChangeInputName();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.selectedUser) {
+    if (changes.selectUser) {
       this.userForm.get('baseInfo').setValue({
-        userId: changes.selectedUser.currentValue.id,
-        userName: changes.selectedUser.currentValue.name
+        userId: changes.selectUser.currentValue.id,
+        userName: changes.selectUser.currentValue.name
       });
     }
     if (changes.user$) {
@@ -55,9 +78,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   saveUser(): void {
-    const { userId: id , userName: name } = this.userForm.get('baseInfo').value;
-    if (!id || !name) { return; }
-    this.eventEditUser.emit({id , name});
+      this.eventSaveUser.emit();
   }
 
   deleteUser(id: string): void {
@@ -90,4 +111,15 @@ export class UserFormComponent implements OnInit, OnChanges {
     }
   }
 
+  subChangeInputName(): void {
+    this.userForm.get('baseInfo').valueChanges.subscribe((change: IUserFormControl) => {
+      if (change.userId) {
+        const newUser: IUser = {
+          id: this.getUserParams('id'),
+          name: change.userName,
+        };
+        this.eventEditUser.emit(newUser);
+      }
+    });
+  }
 }
