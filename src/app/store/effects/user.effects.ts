@@ -20,16 +20,16 @@ export class UserEffects {
   ) {}
 
   /* надо подумать как перенести этот функционал загрузки данных в сервис */
-  loadUsers$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TypeUserActions.LOAD_USERS),
-      switchMap(() => this.userApiService.getUsers()
-        .pipe(
-          map(users => ({type: TypeUserActions.LOAD_USERS_SUCCESS, payload: users}))
-        )
-      )
-    )
-  );
+  // loadUsers$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(TypeUserActions.LOAD_USERS),
+  //     switchMap(() => this.userApiService.getUsers()
+  //       .pipe(
+  //         map(users => ({type: TypeUserActions.LOAD_USERS_SUCCESS, payload: users}))
+  //       )
+  //     )
+  //   )
+  // );
 
   // addUser$ = createEffect(() =>
   //   this.actions$.pipe(

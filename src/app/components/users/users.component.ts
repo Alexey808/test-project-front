@@ -29,13 +29,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<{ users: IUser[], selectUser: IUser }>,
     private userApiService: UserApiService,
-    // private usersService: UsersService,
+    private usersService: UsersService,
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new ActionLoadUsers());
-    this.users$ = this.store.select(sGetAllUsers);
-    // this.users$ = this.usersService.loadUsers$;
+    this.users$ = this.usersService.dataUsers$;
   }
 
   editUser(user: IUser): void {
