@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { UserApiService } from '../../api/user/user.service';
-import {combineLatest, Observable} from 'rxjs';
-import {IUser} from '../../api/user/user.interface';
-import {select, Store} from '@ngrx/store';
-import {sGetAllUsers} from '../../store/selectors/users.selectors';
-import {filter, map, share, switchMap, tap} from 'rxjs/operators';
-import {ActionGetUsers} from '../../store/actions/users.actions';
-import {muteFirst} from '../../api/helper/mute-first-observable';
+import { Observable } from 'rxjs';
+import { IUser } from '../../api/user/user.interface';
+import { Store} from '@ngrx/store';
+import { share, tap } from 'rxjs/operators';
+import { ActionAddUser, ActionDeleteUser, ActionDeleteUsers, ActionGetUsers, ActionUpdateUsers } from '../../store/actions/users.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -17,15 +15,34 @@ export class UsersService {
     private store: Store<{ users: IUser[] }>
   ) { }
 
-  /* Попытка избавится от загрузки данных в сайдэффекте ngrx, зацикливается из зв dispatch */
-  // возможно проблема решается тут в разделе "Асинхронные пайпы" https://habr.com/ru/company/ruvds/blog/485642/
-  // public loadUsers$ = this.store.pipe(
-  //   switchMap(() => this.userApiService.getUsers()),
-  //   tap((users) => this.store.dispatch(new ActionGetUsers(users))),
-  //   share()
-  // );
-  // public users$ = muteFirst(
-  //   this.loadUsers$,
-  //   this.store.pipe(select(sGetAllUsers))
-  // );
+  public dataUsers$ = this.userApiService.getUsers().pipe(
+    tap((users: IUser[]) => {
+      this.store.dispatch(new ActionGetUsers(users));
+    }),
+    share()
+  );
+
+  addUser(newUser: IUser): Observable<IUser> {
+    return this.userApiService.addUser(newUser).pipe(
+      tap((user: IUser) => this.store.dispatch(new ActionAddUser(user)))
+    );
+  }
+
+  saveUser(newUsers: IUser[]): Observable<IUser[]> {
+    return this.userApiService.updateUsers(newUsers).pipe(
+      tap(() => this.store.dispatch(new ActionUpdateUsers(newUsers))),
+    );
+  }
+
+  deleteUser(deleteUser: IUser): Observable<IUser> {
+    return this.userApiService.deleteUser(deleteUser.id).pipe(
+      tap(() => this.store.dispatch(new ActionDeleteUser(deleteUser)))
+    );
+  }
+
+  deleteAllUsers(): Observable<IUser[]> {
+    return this.userApiService.deleteAllUsers().pipe(
+      tap(() => this.store.dispatch(new ActionDeleteUsers()))
+    );
+  }
 }

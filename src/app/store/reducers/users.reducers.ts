@@ -22,7 +22,7 @@ export function userReducers(state: IState = initialState, action: userAction.Ac
       const users = action.payload;
       return {
         ...state,
-        users
+        users: [...users]
       };
     }
 

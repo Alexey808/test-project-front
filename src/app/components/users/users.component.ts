@@ -1,18 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../../api/user/user.interface';
-import { from, Observable, Subscription} from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { UserApiService } from '../../api/user/user.service';
 import { select, Store } from '@ngrx/store';
 import { sGetAllUsers } from '../../store/selectors/users.selectors';
-import {
-  ActionAddUser,
-  ActionDeleteUser,
-  ActionDeleteUsers,
-  ActionLoadUsers,
-  ActionUpdateUsers
-} from '../../store/actions/users.actions';
 import { UsersService } from './users.service';
-import { filter, map, share, switchMap, tap, toArray } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, toArray } from 'rxjs/operators';
 
 
 @Component({
@@ -23,19 +16,21 @@ import { filter, map, share, switchMap, tap, toArray } from 'rxjs/operators';
 export class UsersComponent implements OnInit, OnDestroy {
   users$: Observable<IUser[]>;
   selectUser: IUser;
-  subscription: Subscription = new Subscription();
   userEditIds: string[] = [];
+
+  private destroyStream = new Subject<void>();
 
   constructor(
     private store: Store<{ users: IUser[], selectUser: IUser }>,
     private userApiService: UserApiService,
-    // private usersService: UsersService,
+    private usersService: UsersService,
   ) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new ActionLoadUsers());
+    this.usersService.dataUsers$.pipe(
+      takeUntil(this.destroyStream)
+    ).subscribe();
     this.users$ = this.store.select(sGetAllUsers);
-    // this.users$ = this.usersService.loadUsers$;
   }
 
   editUser(user: IUser): void {
@@ -43,21 +38,19 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   getUser({id}: IUser): void {
-    this.subscription.add(
-      this.userApiService.getUser(id).pipe(
-        // tslint:disable-next-line:no-console
-        tap((user: IUser) => console.info('User test load: ', user))
-      ).subscribe()
-    );
+    this.userApiService.getUser(id).pipe(
+      takeUntil(this.destroyStream),
+      // tslint:disable-next-line:no-console
+      tap((user: IUser) => console.info('User test load: ', user))
+    ).subscribe();
   }
 
   addUser({name}: IUser): void {
     const newUser: IUser = {name, id: ''};
-    this.subscription.add(
-      this.userApiService.addUser(newUser).subscribe((res: IUser) => {
-        this.store.dispatch(new ActionAddUser(res));
-      })
-    );
+
+    this.usersService.addUser(newUser).pipe(
+      takeUntil(this.destroyStream)
+    ).subscribe();
   }
 
   editSelectedUser(updatedUser: IUser) {
@@ -87,48 +80,39 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
 
     // вытаскиваем их
-    let newUsers = [];
-    this.subscription.add(
-      newUsers$.subscribe((users: IUser[]) => newUsers = users),
-    );
+    let newUsers: IUser[] = [];
+    newUsers$.pipe(
+      takeUntil(this.destroyStream)
+    ).subscribe((users: IUser[]) => newUsers = users);
 
     // отправляем
     if (!!newUsers.length) {
-      this.subscription.add(
-        this.userApiService.updateUsers(newUsers).subscribe((res: IUser[]) => {
-          this.store.dispatch(new ActionUpdateUsers(res));
-        })
-      );
+      this.usersService.saveUser(newUsers).pipe(
+        takeUntil(this.destroyStream)
+      ).subscribe();
     }
-
   }
 
-  deleteUser({id}: IUser): void {
+  deleteUser(deleteUser: IUser): void {
     this.users$ = this.users$.pipe(
       switchMap((users: IUser[]) => from(users).pipe(
-        filter((user) => user.id !== id),
+        filter((user: IUser) => user.id !== deleteUser.id),
         toArray()
       ))
     );
 
-    this.subscription.add(
-      this.userApiService.deleteUser(id).subscribe((res: IUser) => {
-        this.store.dispatch(new ActionDeleteUser(res));
-      })
-    );
+    this.usersService.deleteUser(deleteUser).pipe(
+      takeUntil(this.destroyStream)
+    ).subscribe();
   }
 
   deleteAllUsers(): void {
-    this.subscription.add(
-      this.userApiService.deleteAllUsers().subscribe(() => {
-        this.store.dispatch(new ActionDeleteUsers());
-      })
-    );
+    this.usersService.deleteAllUsers().pipe(
+      takeUntil(this.destroyStream)
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.destroyStream.next();
   }
 }
