@@ -24,7 +24,7 @@ export class UsersService {
 
   addUser(newUser: IUser): Observable<IUser> {
     return this.userApiService.addUser(newUser).pipe(
-      tap((users) => this.store.dispatch(new ActionAddUser(users)))
+      tap((user: IUser) => this.store.dispatch(new ActionAddUser(user)))
     );
   }
 

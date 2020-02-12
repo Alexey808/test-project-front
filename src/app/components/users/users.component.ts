@@ -80,8 +80,7 @@ export class UsersComponent implements OnInit, OnDestroy {
     );
 
     // вытаскиваем их
-    let newUsers = [];
-
+    let newUsers: IUser[] = [];
     newUsers$.pipe(
       takeUntil(this.destroyStream)
     ).subscribe((users: IUser[]) => newUsers = users);
