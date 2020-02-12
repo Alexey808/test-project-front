@@ -1,22 +1,17 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
-  Component, ElementRef,
+  Component,
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
-  SimpleChanges, TemplateRef,
-  ViewChild, ViewChildren
+  SimpleChanges,
 } from '@angular/core';
-import {AbstractControl, FormControl, FormGroup, Validators} from '@angular/forms';
-import {fromEvent, Observable, Subject, Subscription} from 'rxjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {  Observable } from 'rxjs';
 import { IUser } from '../../api/user/user.interface';
-import {select, Store} from '@ngrx/store';
-import {ActionSelectUser} from '../../store/actions/users.actions';
-// import {sGetSelectUser} from '../../store/selectors/users.selectors';
+
 
 interface IUserFormControl {
   userId: string;
