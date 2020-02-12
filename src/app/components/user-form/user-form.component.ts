@@ -81,9 +81,10 @@ export class UserFormComponent implements OnInit, OnChanges {
       this.eventSaveUser.emit();
   }
 
-  deleteUser(id: string): void {
-    if (!id) { return; }
-    this.eventDeleteUser.emit({id, name: ''});
+  deleteUser(): void {
+    const user = this.selectUser;
+    if (!user.id) { return; }
+    this.eventDeleteUser.emit(user);
     this.resetUserForm();
   }
 
