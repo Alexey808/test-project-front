@@ -19,14 +19,15 @@ export class UserApiService {
     private http: HttpClient
   ) {}
 
-  getUsers(): Observable<IUser[]> {
+
+  getUsers(): Promise<IUser[]> {
     return this.http.get<IUser[]>(this.url).pipe(
       distinctUntilChanged(), // если новые значения отличаются от предыдущих
-      // filter(Boolean), // убираем пустые элементы
-      // debounceTime(300), // выжидаем время, выполняя поледний запрос
+      filter(Boolean), // убираем пустые элементы
+      debounceTime(300), // выжидаем время, выполняя поледний запрос
       // switchMap((res: Response) => res.json()),
       catchError(handleError('getUser', []))
-    );
+    ).toPromise().then((res: Response) => res.json());
   }
 
   getUser(id: string): Observable<any> {
@@ -43,10 +44,7 @@ export class UserApiService {
   }
 
   updateUsers(users: IUser[]) {
-
-    // const usersIds: string = users.map((user: IUser) => user.id).join(',');
     const url = `${this.url}`;
-    console.log(url, users);
     return this.http.put<IUser[]>(url, users, this.httpOptions).pipe(
       catchError(handleError<IUser[]>('updateUser', users))
     );
